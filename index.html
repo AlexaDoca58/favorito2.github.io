@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favoritos - Toby Fox</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <header class="sidebar-header">
+                <p>Tu biblioteca</p>
+                <h1>Favoritos</h1>
+            </header>
+
+            <section class="collections-section">
+                <h2>Colecciones</h2>
+                <div class="collection-item dummy-action">
+                    <span>Icónicas</span>
+                    <small>12 canciones</small>
+                    <button class="play-small-btn"><i class="fa-solid fa-play"></i></button>
+                </div>
+                <div class="collection-item dummy-action">
+                    <span>Batallas</span>
+                    <small>8 canciones</small>
+                    <button class="play-small-btn"><i class="fa-solid fa-play"></i></button>
+                </div>
+                <div class="collection-item dummy-action">
+                    <span>Relajadas</span>
+                    <small>6 canciones</small>
+                    <button class="play-small-btn"><i class="fa-solid fa-play"></i></button>
+                </div>
+            </section>
+            
+            <section class="shortcuts-section">
+                <h2>Atajos</h2>
+                <div class="shortcut-grid">
+                    <button class="shortcut-btn play-all-btn"><i class="fa-solid fa-heart"></i> Reproducir todo</button>
+                    <button class="shortcut-btn mix-btn"><i class="fa-solid fa-shuffle"></i> Mezclar favoritos</button>
+                    
+                    <button class="shortcut-btn download-btn dummy-action"><i class="fa-solid fa-download"></i> Descargar selección</button>
+                    <button class="shortcut-btn flowey-btn dummy-action"><i class="fa-solid fa-gem"></i> Generar lista con Flowey</button>
+                </div>
+            </section>
+        </aside>
+
+        <main class="main-content">
+            
+            <nav class="top-navigation">
+                <button class="nav-top-btn active" data-section="music"><i class="fa-solid fa-music"></i>Canciones</button>
+                <button class="nav-top-btn dummy-action"><i class="fa-solid fa-list"></i>Listas</button>
+                <button class="nav-top-btn dummy-action" data-section="creator"><i class="fa-solid fa-palette"></i>Arte</button>
+            </nav>
+
+            <div id="music-section" class="content-section active">
+                
+                <div class="player-header">
+                    <div class="track-info">
+                        <span id="track-title" class="current-track-title">Selecciona una canción</span>
+                        <small class="track-artist" id="track-artist-info">Toby Fox · --:--</small> 
+                    </div>
+                    <div class="player-actions">
+                        <button class="action-btn secondary dummy-action">Quitar</button>
+                        <button class="action-btn primary" onclick="togglePlayPause(true)"><i class="fa-solid fa-play"></i> Reproducir</button>
+                    </div>
+                </div>
+
+                <div class="player-visualizer-section">
+                    <div class="visualizer-container">
+                        <canvas id="frequency-visualizer"></canvas>
+                        <div class="visualizer-placeholder">Visualizador de audio</div>
+                        <div class="error-message" id="error-message"></div>
+                    </div>
+
+                    <div class="marked-tracks-container">
+                        <h2>Canciones marcadas</h2>
+                        <div class="marked-tracks" id="tracklist-cards">
+                            </div>
+                    </div>
+                    
+                    <div class="playback-controls">
+                        
+                        <div class="transport-controls">
+                            <button class="control-btn" onclick="playPrevTrack()"><i class="fa-solid fa-backward-step"></i></button>
+                            <button id="play-pause-btn" class="control-btn play-pause-lg"><i class="fa-solid fa-play"></i></button>
+                            <button class="control-btn" onclick="playNextTrack()"><i class="fa-solid fa-forward-step"></i></button>
+                        </div>
+                        
+                        <div class="progress-container">
+                            <input type="range" id="progress-bar" min="0" max="100" step="0.1" value="0" class="progress-slider">
+                        </div>
+                        
+                        <div class="volume-controls">
+                            <button class="control-btn dummy-action"><i class="fa-solid fa-volume-high"></i></button>
+                            <button class="control-btn add-to-list-btn dummy-action">Añadir a lista</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="creator-section" class="content-section">
+                <div class="creator-container">
+                    <div class="creator-info">
+                        <h3>Toby Fox</h3>
+                        <p>Toby Fox es el desarrollador y compositor principal de los aclamados videojuegos <strong>Undertale</strong> y <strong>Deltarune</strong>. Su trabajo es conocido por combinar elementos de la música de videojuegos de 16-bits con composiciones emocionales y memorables.</p>
+                        <p>También ha contribuido a la banda sonora de otros títulos, como Super Smash Bros. Ultimate y Pokémon Espada y Escudo.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

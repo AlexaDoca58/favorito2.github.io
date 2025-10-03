@@ -1,0 +1,291 @@
+:root {
+    --bg-dark: #121212; /* Fondo principal (negro) */
+    --bg-content: #1e1e1e; /* Fondo del contenido principal */
+    --sidebar-color: #3b2866; /* Morado Oscuro de la barra lateral */
+    --primary-color: #ffd700; /* Amarillo/Dorado (Botones de Reproducir) */
+    --secondary-color: #ff0000; /* Rojo (Énfasis en la reproducción) */
+    --text-color: #ffffff; /* Texto principal */
+    --text-muted: #aaaaaa; /* Texto secundario */
+    --track-active-bg: #444444; /* Fondo para tarjeta de canción activa */
+    --border-color: #333333;
+    --play-btn-bg: #5a3c9b; /* Morado más claro para el botón de play en colecciones */
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* --- ESTRUCTURA PRINCIPAL (Dashboard) --- */
+.dashboard-container {
+    display: flex;
+    width: 95vw;
+    max-width: 1200px; /* Tamaño de escritorio o tablet grande */
+    height: 90vh;
+    background-color: var(--bg-dark);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+}
+
+/* --- 1. BARRA LATERAL (Izquierda) --- */
+.sidebar {
+    width: 280px;
+    background-color: var(--sidebar-color);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    flex-shrink: 0;
+    overflow-y: auto;
+}
+
+.sidebar-header p { font-size: 0.8em; margin: 0; color: var(--text-muted); }
+.sidebar-header h1 { font-size: 2em; margin: 3px 0 0 0; }
+
+/* Colecciones */
+.collections-section, .shortcuts-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.collections-section h2, .shortcuts-section h2 { 
+    font-size: 1em; 
+    text-transform: uppercase; 
+    color: var(--text-muted); 
+    margin: 0; 
+}
+.collection-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+.collection-item span { font-weight: bold; }
+.collection-item small { color: var(--text-muted); font-size: 0.8em; }
+.play-small-btn {
+    background-color: var(--play-btn-bg);
+    color: var(--text-color);
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Atajos */
+.shortcut-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.shortcut-btn {
+    background-color: var(--bg-content);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s, color 0.2s;
+}
+.shortcut-btn:hover { background-color: #333; }
+.shortcut-btn.play-all-btn, .shortcut-btn.mix-btn.active { 
+    background-color: var(--primary-color); 
+    color: var(--bg-dark); 
+    font-weight: bold;
+    border-color: var(--primary-color);
+}
+.shortcut-btn.download-btn, .shortcut-btn.flowey-btn { grid-column: span 2; }
+
+
+/* --- 2. CONTENIDO PRINCIPAL (Derecha) --- */
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: var(--bg-content);
+    overflow-y: auto;
+}
+
+/* Navegación Superior */
+.top-navigation {
+    display: flex;
+    justify-content: flex-start; /* Alineado a la izquierda */
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.nav-top-btn {
+    background: var(--bg-content);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s;
+}
+.nav-top-btn.active {
+    background-color: var(--primary-color);
+    color: var(--bg-dark);
+    font-weight: bold;
+    border-color: var(--primary-color);
+}
+.nav-top-btn:not(.active):hover { background-color: #333; }
+
+
+/* Reproductor Superior y Acciones */
+.player-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--bg-dark);
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.track-info {
+    display: flex;
+    flex-direction: column;
+}
+.current-track-title { font-size: 1.3em; font-weight: bold; }
+.track-artist { font-size: 0.8em; color: var(--text-muted); }
+.player-actions button { margin-left: 10px; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.player-actions .secondary { background-color: #333; color: var(--text-color); border: none; }
+.player-actions .primary { background-color: var(--primary-color); color: var(--bg-dark); border: none; }
+
+
+/* Visualizador y Controles Inferiores */
+.player-visualizer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.visualizer-container {
+    width: 100%;
+    height: 200px;
+    position: relative;
+    background-color: #111;
+    border-radius: 6px;
+}
+#frequency-visualizer {
+    width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: block;
+}
+.visualizer-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-muted);
+    font-size: 1.2em;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Canciones Marcadas (Cards) */
+.marked-tracks-container {
+    padding: 10px 0;
+}
+.marked-tracks-container h2 { font-size: 1em; color: var(--text-color); margin-bottom: 15px; }
+.marked-tracks {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* 3 columnas */
+    gap: 10px;
+}
+.marked-card {
+    padding: 15px;
+    background-color: var(--bg-dark); /* Color negro de la imagen */
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+.marked-card:hover { border-color: var(--primary-color); }
+.marked-card.playing {
+    background-color: var(--track-active-bg);
+    border-color: var(--primary-color);
+}
+.marked-card p { margin: 0; font-size: 1em; font-weight: bold; }
+.marked-card small { color: var(--text-muted); font-size: 0.8em; }
+
+/* Controles de Reproducción */
+.playback-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding-top: 10px;
+}
+.transport-controls {
+    display: flex; gap: 15px; 
+}
+.control-btn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.control-btn:hover { color: var(--text-color); }
+.play-pause-lg {
+    font-size: 2.5em !important;
+}
+
+/* Barra de Progreso */
+.progress-container { flex-grow: 1; margin: 0 15px; }
+.progress-slider {
+    width: 100%;
+    -webkit-appearance: none; appearance: none;
+    height: 4px; 
+    background: var(--border-color);
+    border-radius: 5px;
+    cursor: pointer;
+}
+.progress-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 12px; height: 12px;
+    background: var(--primary-color); 
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -4px; /* Centrar el pulgar en la barra */
+}
+
+/* Controles de Volumen/Acción */
+.volume-controls { display: flex; align-items: center; gap: 10px; }
+.add-to-list-btn { font-size: 0.8em; padding: 8px 12px; border-radius: 20px; background-color: var(--bg-dark); border: 1px solid var(--border-color); color: var(--primary-color); }
+
+/* --- SECCIONES SECUNDARIAS --- */
+.content-section { display: none; }
+.content-section.active { display: block; }
+.creator-container { padding: 20px 0; }
+.creator-info { text-align: justify; }
+
+/* Utilidades */
+.dummy-action { opacity: 0.6; cursor: default !important; }
+.error-message { 
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white; 
+    text-align: center; 
+    padding: 8px 15px; 
+    display: none; 
+    background-color: var(--secondary-color); 
+    border-radius: 4px;
+    z-index: 100;
+}
