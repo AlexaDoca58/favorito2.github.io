@@ -1,9 +1,9 @@
 :root {
     --bg-dark: #121212; /* Fondo principal (negro) */
     --bg-content: #1e1e1e; /* Fondo del contenido principal */
-    --sidebar-color: #3b2866; /* Morado Oscuro de la barra lateral */
+    --sidebar-color: #3b2866; /* Morado Oscuro de la barra lateral (como en tu imagen) */
     --primary-color: #ffd700; /* Amarillo/Dorado (Botones de Reproducir) */
-    --secondary-color: #ff0000; /* Rojo (Énfasis en la reproducción) */
+    --secondary-color: #ff0000; /* Rojo (Énfasis en la reproducción/visualizador) */
     --text-color: #ffffff; /* Texto principal */
     --text-muted: #aaaaaa; /* Texto secundario */
     --track-active-bg: #444444; /* Fondo para tarjeta de canción activa */
@@ -27,7 +27,7 @@ body {
 .dashboard-container {
     display: flex;
     width: 95vw;
-    max-width: 1200px; /* Tamaño de escritorio o tablet grande */
+    max-width: 1200px;
     height: 90vh;
     background-color: var(--bg-dark);
     border-radius: 12px;
@@ -104,11 +104,17 @@ body {
     transition: background-color 0.2s, color 0.2s;
 }
 .shortcut-btn:hover { background-color: #333; }
-.shortcut-btn.play-all-btn, .shortcut-btn.mix-btn.active { 
+.shortcut-btn.play-all-btn { 
     background-color: var(--primary-color); 
     color: var(--bg-dark); 
     font-weight: bold;
     border-color: var(--primary-color);
+}
+.shortcut-btn.mix-btn.active { 
+    background-color: #5a3c9b; /* Morado para el shuffle activo */
+    color: var(--text-color); 
+    font-weight: bold;
+    border-color: var(--play-btn-bg);
 }
 .shortcut-btn.download-btn, .shortcut-btn.flowey-btn { grid-column: span 2; }
 
@@ -124,7 +130,7 @@ body {
 /* Navegación Superior */
 .top-navigation {
     display: flex;
-    justify-content: flex-start; /* Alineado a la izquierda */
+    justify-content: flex-start;
     gap: 15px;
     margin-bottom: 20px;
 }
@@ -202,12 +208,12 @@ body {
 .marked-tracks-container h2 { font-size: 1em; color: var(--text-color); margin-bottom: 15px; }
 .marked-tracks {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* 3 columnas */
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* 3 columnas o más */
     gap: 10px;
 }
 .marked-card {
     padding: 15px;
-    background-color: var(--bg-dark); /* Color negro de la imagen */
+    background-color: var(--bg-dark); 
     border: 1px solid var(--border-color);
     border-radius: 8px;
     cursor: pointer;
@@ -261,7 +267,7 @@ body {
     background: var(--primary-color); 
     border-radius: 50%;
     cursor: pointer;
-    margin-top: -4px; /* Centrar el pulgar en la barra */
+    margin-top: -4px; 
 }
 
 /* Controles de Volumen/Acción */
