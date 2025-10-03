@@ -1,7 +1,7 @@
 // Hacemos las funciones globales para que el HTML pueda llamarlas
 let playNextTrack;
 let playPrevTrack;
-let togglePlayPause; // Hacemos esta global para el botón "Reproducir" de arriba
+let togglePlayPause; 
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. OBTENER ELEMENTOS DEL DOM
@@ -11,11 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const visualizerCanvas = document.getElementById('frequency-visualizer');
     const canvasCtx = visualizerCanvas.getContext('2d');
     
-    // NUEVOS ELEMENTOS
+    // ELEMENTOS
     const progressBar = document.getElementById('progress-bar');
     const mixBtn = document.querySelector('.mix-btn');
     const playAllBtn = document.querySelector('.play-all-btn');
-    const tracklistCardsContainer = document.getElementById('tracklist-cards'); // Contenedor de las CARDS
+    const tracklistCardsContainer = document.getElementById('tracklist-cards'); 
 
     // Elemento de mensaje de error/info
     const errorMessage = document.getElementById('error-message');
@@ -91,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < dataArray.length; i++) {
             const barHeight = Math.min((dataArray[i] / 255) * visualizerCanvas.height, visualizerCanvas.height); 
             
-            // Colores Rojos/Rosados para el visualizador
             const gradient = canvasCtx.createLinearGradient(0, visualizerCanvas.height - barHeight, 0, visualizerCanvas.height);
             gradient.addColorStop(0, '#ff0000'); 
             gradient.addColorStop(1, '#ff6666'); 
@@ -107,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
             cancelAnimationFrame(animationId);
             animationId = null;
         }
-        // No limpiar el canvas para que se vea el placeholder
     };
     
     // 4. LÓGICA DEL REPRODUCTOR
@@ -120,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentTrack = tracks[currentTrackIndex];
         audio.src = currentTrack.src;
         
-        // Muestra el título y la duración
         trackTitle.textContent = currentTrack.title;
         trackArtistInfo.textContent = `Toby Fox · ${currentTrack.duration}`; 
         
@@ -139,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    togglePlayPause = (forcePlay = false) => { // Hacemos esta global
+    togglePlayPause = (forcePlay = false) => { 
         if (!audio.src) {
             loadTrack(0, true);
             return;
@@ -172,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    playNextTrack = () => { // Hacemos esta global
+    playNextTrack = () => { 
         let nextIndex;
         if (isShuffling) {
             let randomIndex;
@@ -187,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadTrack(nextIndex, true);
     };
 
-    playPrevTrack = () => { // Hacemos esta global
+    playPrevTrack = () => { 
         const prevIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
         loadTrack(prevIndex, true);
     };
@@ -214,14 +211,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // FUNCIÓN PARA CREAR LAS CARDS
     const renderTracklist = () => {
-        tracklistCardsContainer.innerHTML = ''; // Limpiar el contenedor de cards
+        tracklistCardsContainer.innerHTML = ''; 
         
         tracks.forEach((track, index) => {
             const card = document.createElement('div');
             card.className = 'marked-card';
             card.dataset.index = index; 
             
-            // Limpiamos el número del título (ej: 01. Once Upon a Time -> Once Upon a Time)
             const cleanedTitle = track.title.replace(/^\d+\.\s*/, ''); 
             
             card.innerHTML = `
@@ -230,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             
             card.addEventListener('click', () => {
-                loadTrack(index, true); // Carga y reproduce al hacer clic en la tarjeta
+                loadTrack(index, true); 
             });
             
             tracklistCardsContainer.appendChild(card);
