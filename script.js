@@ -15,16 +15,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressBar = document.getElementById('progress-bar');
     const mixBtn = document.querySelector('.mix-btn');
     const playAllBtn = document.querySelector('.play-all-btn');
-    const tracklistCardsContainer = document.getElementById('tracklist-cards');
+    const tracklistCardsContainer = document.getElementById('tracklist-cards'); // Contenedor de las CARDS
 
     // Elemento de mensaje de error/info
     const errorMessage = document.getElementById('error-message');
 
 
-    // 2. LISTA DE CANCIONES (¡CON DURACIÓN Y NOMBRES CORREGIDOS!)
-    // NOTA: Asegúrate de que los archivos .mp3 existan en la ruta './Audio/'
+    // 2. LISTA DE CANCIONES (¡CON DURACIÓN!)
     const tracks = [
-        // Las duraciones son estáticas y solo se usan para mostrar en la tarjeta
         { title: 'Once Upon a Time', src: './Audio/01. Once Upon A Time.mp3', duration: '1:03' },
         { title: 'Fallen Down', src: './Audio/04. Fallen Down.mp3', duration: '1:48' },
         { title: 'Your Best Friend', src: './Audio/03. Your Best Friend.mp3', duration: '0:30' },
@@ -46,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const showError = (message) => {
         errorMessage.textContent = message;
         errorMessage.style.display = 'block';
-        // Ajuste de color según el tipo de mensaje
         errorMessage.style.backgroundColor = message.includes('Error') ? '#ff4444' : '#ffd700';
         errorMessage.style.color = message.includes('Error') ? 'white' : 'black';
         setTimeout(() => {
@@ -82,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         animationId = requestAnimationFrame(drawVisualizer);
         
-        // Ajuste de tamaño del canvas
         visualizerCanvas.width = visualizerCanvas.clientWidth;
         visualizerCanvas.height = visualizerCanvas.clientHeight;
         
@@ -95,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < dataArray.length; i++) {
             const barHeight = Math.min((dataArray[i] / 255) * visualizerCanvas.height, visualizerCanvas.height); 
             
-            // Colores Rojos/Rosados para el visualizador (similar a tu diseño)
+            // Colores Rojos/Rosados para el visualizador
             const gradient = canvasCtx.createLinearGradient(0, visualizerCanvas.height - barHeight, 0, visualizerCanvas.height);
             gradient.addColorStop(0, '#ff0000'); 
             gradient.addColorStop(1, '#ff6666'); 
@@ -111,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cancelAnimationFrame(animationId);
             animationId = null;
         }
-        // No limpiar el canvas para que se quede vacío y se vea el placeholder
+        // No limpiar el canvas para que se vea el placeholder
     };
     
     // 4. LÓGICA DEL REPRODUCTOR
@@ -124,13 +120,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentTrack = tracks[currentTrackIndex];
         audio.src = currentTrack.src;
         
-        // Muestra el título y la duración estática de la tarjeta
+        // Muestra el título y la duración
         trackTitle.textContent = currentTrack.title;
         trackArtistInfo.textContent = `Toby Fox · ${currentTrack.duration}`; 
         
         audio.load();
         progressBar.value = 0;
-
 
         // Actualizar el estado 'playing' de las cards
         document.querySelectorAll('.marked-card').forEach((card, i) => {
@@ -144,9 +139,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    togglePlayPause = (forcePlay = false) => {
+    togglePlayPause = (forcePlay = false) => { // Hacemos esta global
         if (!audio.src) {
-            loadTrack(currentTrackIndex, true);
+            loadTrack(0, true);
             return;
         }
         
@@ -177,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    playNextTrack = () => {
+    playNextTrack = () => { // Hacemos esta global
         let nextIndex;
         if (isShuffling) {
             let randomIndex;
@@ -192,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadTrack(nextIndex, true);
     };
 
-    playPrevTrack = () => {
+    playPrevTrack = () => { // Hacemos esta global
         const prevIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
         loadTrack(prevIndex, true);
     };
@@ -217,16 +212,16 @@ document.addEventListener('DOMContentLoaded', () => {
         showError('Reproducción en orden iniciada.');
     };
 
-    // FUNCIÓN PARA CREAR LAS CARDS EN LA LISTA MARCADA
+    // FUNCIÓN PARA CREAR LAS CARDS
     const renderTracklist = () => {
-        tracklistCardsContainer.innerHTML = ''; // Limpiar
+        tracklistCardsContainer.innerHTML = ''; // Limpiar el contenedor de cards
         
         tracks.forEach((track, index) => {
             const card = document.createElement('div');
             card.className = 'marked-card';
             card.dataset.index = index; 
             
-            // Aquí quitamos el número del título (ej: 01. Once Upon a Time -> Once Upon a Time)
+            // Limpiamos el número del título (ej: 01. Once Upon a Time -> Once Upon a Time)
             const cleanedTitle = track.title.replace(/^\d+\.\s*/, ''); 
             
             card.innerHTML = `
@@ -235,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             
             card.addEventListener('click', () => {
-                loadTrack(index, true);
+                loadTrack(index, true); // Carga y reproduce al hacer clic en la tarjeta
             });
             
             tracklistCardsContainer.appendChild(card);
@@ -268,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mixBtn.addEventListener('click', handleMixToggle);
     playAllBtn.addEventListener('click', handlePlayAll);
 
-    // Navegación (para cambiar entre Música y Arte)
+    // Navegación (para cambiar entre Música, Listas y Arte)
     document.querySelectorAll('.nav-top-btn').forEach(item => {
         item.addEventListener('click', (event) => {
             document.querySelectorAll('.nav-top-btn').forEach(i => i.classList.remove('active'));
