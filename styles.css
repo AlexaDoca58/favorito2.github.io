@@ -1,14 +1,14 @@
 :root {
     --bg-dark: #121212; /* Fondo principal (negro) */
     --bg-content: #1e1e1e; /* Fondo del contenido principal */
-    --sidebar-color: #3b2866; /* Morado Oscuro de la barra lateral (aunque oculta, define la paleta) */
-    --primary-color: #ffd700; /* Amarillo/Dorado (Botones de Reproducir/Activo) */
+    --sidebar-color: #3b2866; /* Morado Oscuro de la barra lateral */
+    --primary-color: #ffd700; /* Amarillo/Dorado (Botones de Reproducir) */
     --secondary-color: #ff0000; /* Rojo (Énfasis en la reproducción/visualizador) */
     --text-color: #ffffff; /* Texto principal */
     --text-muted: #aaaaaa; /* Texto secundario */
     --track-active-bg: #444444; /* Fondo para tarjeta de canción activa */
     --border-color: #333333;
-    --play-btn-bg: #5a3c9b; /* Morado más claro para el botón de play */
+    --play-btn-bg: #5a3c9b; /* Morado más claro para el botón de play en colecciones */
 }
 
 body {
@@ -17,44 +17,131 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
-/* --- ESTRUCTURA PRINCIPAL (Ajuste para AppMachine) --- */
+/* --- ESTRUCTURA PRINCIPAL (Dashboard) --- */
 .dashboard-container {
     display: flex;
-    width: 100%; 
-    max-width: none; 
-    height: auto; 
+    width: 95vw;
+    max-width: 1200px; /* Tamaño máximo para simular escritorio */
+    height: 90vh; /* Altura de la ventana */
     background-color: var(--bg-dark);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
 }
 
-/* OCULTAMOS COMPLETAMENTE LA BARRA LATERAL (ASIDE) */
+/* --- 1. BARRA LATERAL (Izquierda) --- */
 .sidebar {
-    display: none; 
+    width: 280px;
+    background-color: var(--sidebar-color);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    flex-shrink: 0;
+    overflow-y: auto;
 }
 
-/* CONTENIDO PRINCIPAL (Ocupa todo el espacio visible en AppMachine) */
+.sidebar-header p { font-size: 0.8em; margin: 0; color: var(--text-muted); }
+.sidebar-header h1 { font-size: 2em; margin: 3px 0 0 0; }
+
+/* Colecciones */
+.collections-section, .shortcuts-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.collections-section h2, .shortcuts-section h2 { 
+    font-size: 1em; 
+    text-transform: uppercase; 
+    color: var(--text-muted); 
+    margin: 0; 
+}
+.collection-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+.collection-item span { font-weight: bold; }
+.collection-item small { color: var(--text-muted); font-size: 0.8em; }
+.play-small-btn {
+    background-color: var(--play-btn-bg);
+    color: var(--text-color);
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Atajos */
+.shortcut-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.shortcut-btn {
+    background-color: var(--bg-content);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s, color 0.2s;
+}
+.shortcut-btn:hover { background-color: #333; }
+.shortcut-btn.play-all-btn { 
+    background-color: var(--primary-color); 
+    color: var(--bg-dark); 
+    font-weight: bold;
+    border-color: var(--primary-color);
+}
+.shortcut-btn.mix-btn.active { 
+    background-color: #5a3c9b; 
+    color: var(--text-color); 
+    font-weight: bold;
+    border-color: var(--play-btn-bg);
+}
+.shortcut-btn.download-btn, .shortcut-btn.flowey-btn { grid-column: span 2; }
+
+
+/* --- 2. CONTENIDO PRINCIPAL (Derecha) --- */
 .main-content {
     flex-grow: 1;
-    padding: 15px; 
+    padding: 20px;
     background-color: var(--bg-content);
-    overflow-y: visible;
-    min-height: 100vh; 
+    overflow-y: auto;
 }
 
-/* NAVEGACIÓN SUPERIOR */
+/* Navegación Superior */
 .top-navigation {
-    display: flex; justify-content: space-around; gap: 10px; margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-start; 
+    gap: 15px;
+    margin-bottom: 20px;
 }
 .nav-top-btn {
-    flex-grow: 1;
     background: var(--bg-content);
     color: var(--text-color);
     border: 1px solid var(--border-color);
-    padding: 8px 10px;
+    padding: 8px 15px;
     border-radius: 20px;
     cursor: pointer;
-    font-size: 0.8em; 
+    font-size: 0.9em;
     transition: background-color 0.2s;
 }
 .nav-top-btn.active {
@@ -65,115 +152,176 @@ body {
 }
 .nav-top-btn:not(.active):hover { background-color: #333; }
 
-/* REPRODUCTOR SUPERIOR */
+
+/* Reproductor Superior y Acciones */
 .player-header {
-    display: flex; flex-direction: column; align-items: flex-start;
-    padding: 15px; background-color: var(--bg-dark); border-radius: 8px; margin-bottom: 20px;
-}
-.current-track-title { font-size: 1.5em; font-weight: bold; color: var(--primary-color); }
-.track-artist { font-size: 0.9em; color: var(--text-muted); }
-
-.player-actions { 
-    display: flex; justify-content: space-between; width: 100%; margin-top: 10px;
-}
-.player-actions .action-btn { 
-    flex-grow: 1; padding: 10px 15px; border-radius: 20px; font-weight: bold; border: none;
-    cursor: pointer;
-}
-.player-actions .primary {
-    background-color: var(--primary-color);
-    color: var(--bg-dark);
-    margin-left: 10px;
-}
-.player-actions .secondary {
-    background-color: var(--border-color);
-    color: var(--text-color);
-}
-
-
-/* VISUALIZADOR Y LISTAS */
-.visualizer-container {
-    width: 100%; height: 150px; position: relative;
-    background-color: #111; border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--bg-dark);
+    border-radius: 8px;
     margin-bottom: 20px;
 }
-.visualizer-placeholder {
-    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    display: flex; justify-content: center; align-items: center;
-    color: var(--text-muted); font-size: 0.9em;
-    z-index: 1;
+.track-info {
+    display: flex;
+    flex-direction: column;
+}
+.current-track-title { font-size: 1.3em; font-weight: bold; }
+.track-artist { font-size: 0.8em; color: var(--text-muted); }
+.player-actions button { margin-left: 10px; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.player-actions .secondary { background-color: #333; color: var(--text-color); border: none; }
+.player-actions .primary { background-color: var(--primary-color); color: var(--bg-dark); border: none; }
+
+
+/* Visualizador y Controles Inferiores */
+.player-visualizer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.visualizer-container {
+    width: 100%;
+    height: 200px; /* Altura consistente para el visualizador */
+    position: relative;
+    background-color: #111;
+    border-radius: 6px;
 }
 #frequency-visualizer {
-    width: 100%; height: 100%; position: relative; z-index: 2; display: block;
+    width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: block;
+}
+.visualizer-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-muted);
+    font-size: 1.2em;
+    opacity: 0.5;
+    pointer-events: none;
 }
 
-/* LISTA DE CANCIONES (CARDS) */
-.marked-tracks-container h2 { font-size: 1.2em; color: var(--text-color); margin-bottom: 15px; }
+/* Canciones Marcadas (Cards) */
+.marked-tracks-container {
+    padding: 10px 0;
+}
+.marked-tracks-container h2 { font-size: 1em; color: var(--text-color); margin-bottom: 15px; }
 .marked-tracks {
     display: grid;
-    grid-template-columns: 1fr; /* Una sola columna para móvil */
+    /* 4 columnas por defecto, ajustables al tamaño */
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
     gap: 10px;
 }
-.track-card {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 15px; background-color: #222; border-radius: 6px;
-    cursor: pointer; transition: background-color 0.2s;
+.marked-card {
+    padding: 15px;
+    background-color: var(--bg-dark); 
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
 }
-.track-card:hover { background-color: var(--track-active-bg); }
-.track-card.active {
-    background-color: var(--play-btn-bg); /* Morado más claro para la activa */
-    color: var(--primary-color);
-    border-left: 3px solid var(--primary-color);
-    font-weight: bold;
+.marked-card:hover { border-color: var(--primary-color); }
+.marked-card.playing {
+    background-color: var(--track-active-bg);
+    border-color: var(--primary-color);
 }
-.track-card .track-id { color: var(--text-muted); margin-right: 10px; }
-.track-card.active .track-id { color: var(--primary-color); }
-.track-card .track-title { flex-grow: 1; }
-.track-card .track-duration { color: var(--text-muted); font-size: 0.9em; }
+.marked-card p { margin: 0; font-size: 1em; font-weight: bold; }
+.marked-card small { color: var(--text-muted); font-size: 0.8em; }
 
-
-/* CONTROLES INFERIORES */
+/* Controles de Reproducción */
 .playback-controls {
     display: flex;
-    flex-direction: column; /* Apilamos Progress y Transport */
+    justify-content: space-between;
     align-items: center;
     gap: 15px;
-    padding: 20px 0;
-    width: 100%;
+    padding-top: 10px;
+    width: 100%; /* Ocupa todo el ancho */
 }
-.progress-container { width: 100%; }
-.transport-controls { display: flex; justify-content: center; gap: 30px; order: 2; }
-.volume-controls { display: flex; justify-content: center; gap: 15px; order: 3; width: 100%; }
-
+.transport-controls {
+    display: flex; gap: 15px; 
+}
 .control-btn {
-    background: none; border: none; color: var(--primary-color);
-    font-size: 1.8em; cursor: pointer; transition: color 0.2s;
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: color 0.2s;
 }
 .control-btn:hover { color: var(--text-color); }
 .play-pause-lg {
-    font-size: 3.5em !important;
+    font-size: 2.5em !important;
 }
 
 /* Barra de Progreso */
+.progress-container { flex-grow: 1; margin: 0 15px; }
 .progress-slider {
-    width: 100%; -webkit-appearance: none; appearance: none;
-    height: 6px; background: var(--border-color); border-radius: 5px; cursor: pointer;
+    width: 100%;
+    -webkit-appearance: none; appearance: none;
+    height: 4px; 
+    background: var(--border-color);
+    border-radius: 5px;
+    cursor: pointer;
 }
 .progress-slider::-webkit-slider-thumb {
     -webkit-appearance: none; appearance: none;
-    width: 15px; height: 15px; background: var(--primary-color); 
-    border-radius: 50%; cursor: pointer;
+    width: 12px; height: 12px;
+    background: var(--primary-color); 
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -4px; 
 }
-.add-to-list-btn { font-size: 0.9em; padding: 8px 12px; border-radius: 20px; background-color: var(--bg-content); border: 1px solid var(--border-color); color: var(--text-color); }
 
+/* Controles de Volumen/Acción */
+.volume-controls { display: flex; align-items: center; gap: 10px; }
+.add-to-list-btn { font-size: 0.8em; padding: 8px 12px; border-radius: 20px; background-color: var(--bg-dark); border: 1px solid var(--border-color); color: var(--primary-color); }
 
-/* SECCIONES SECUNDARIAS */
+/* --- SECCIONES SECUNDARIAS --- */
 .content-section { display: none; }
 .content-section.active { display: block; }
 
-.error-message {
-    position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
-    color: var(--text-color); background-color: rgba(255, 0, 0, 0.8); 
-    padding: 5px 10px; border-radius: 5px; z-index: 10;
-    display: none;
+/* Utilidades */
+.dummy-action { opacity: 0.6; cursor: default !important; }
+.error-message { 
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white; 
+    text-align: center; 
+    padding: 8px 15px; 
+    display: none; 
+    background-color: var(--secondary-color); 
+    border-radius: 4px;
+    z-index: 100;
+}
+
+
+/* ======================================================= */
+/* === AJUSTE CRÍTICO PARA APPMACINE (VISTA MÓVIL) === */
+/* ======================================================= */
+@media (max-width: 900px) {
+    /* Ocultamos la barra lateral que causa desbordamiento */
+    .sidebar {
+        display: none !important; 
+    }
+    /* Hacemos que el contenedor principal ocupe todo el espacio */
+    .dashboard-container {
+        width: 100vw;
+        height: auto;
+        min-height: 100vh;
+        max-width: none;
+        box-shadow: none;
+        flex-direction: column;
+    }
+    .main-content {
+        padding: 15px;
+        width: 100%;
+        max-width: 100%;
+        min-height: 100vh;
+    }
+    /* Las tarjetas de canciones ocupan una columna completa para mayor visibilidad */
+    .marked-tracks {
+        grid-template-columns: 1fr; 
+    }
 }
