@@ -3,12 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Música - AppMachine</title>
+    <title>Favoritos - Toby Fox</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <div class="dashboard-container">
+        <aside class="sidebar">
+            <header class="sidebar-header">
+                <p>Tu biblioteca</p>
+                <h1>Favoritos</h1>
+            </header>
+
+            <section class="collections-section">
+                <h2>Colecciones</h2>
+                <div class="collection-item dummy-action">
+                    <span>Icónicas</span>
+                    <small>12 canciones</small>
+                    <button class="play-small-btn"><i class="fa-solid fa-play"></i></button>
+                </div>
+                <div class="collection-item dummy-action">
+                    <span>Batallas</span>
+                    <small>8 canciones</small>
+                    <button class="play-small-btn"><i class="fa-solid fa-play"></i></button>
+                </div>
+                <div class="collection-item dummy-action">
+                    <span>Relajadas</span>
+                    <small>6 canciones</small>
+                    <button class="play-small-btn"><i class="fa-solid fa-play"></i></button>
+                </div>
+            </section>
+            
+            <section class="shortcuts-section">
+                <h2>Atajos</h2>
+                <div class="shortcut-grid">
+                    <button class="shortcut-btn play-all-btn"><i class="fa-solid fa-heart"></i> Reproducir todo</button>
+                    <button class="shortcut-btn mix-btn"><i class="fa-solid fa-shuffle"></i> Mezclar favoritos</button>
+                    
+                    <button class="shortcut-btn download-btn dummy-action"><i class="fa-solid fa-download"></i> Descargar selección</button>
+                    <button class="shortcut-btn flowey-btn dummy-action"><i class="fa-solid fa-gem"></i> Generar lista con Flowey</button>
+                </div>
+            </section>
+        </aside>
+
         <main class="main-content">
             
             <nav class="top-navigation">
@@ -38,7 +75,7 @@
                     </div>
 
                     <div class="marked-tracks-container">
-                        <h2>Canciones destacadas (6)</h2>
+                        <h2>Canciones marcadas</h2>
                         <div class="marked-tracks" id="tracklist-cards">
                             </div>
                     </div>
