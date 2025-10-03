@@ -1,7 +1,7 @@
 // Hacemos las funciones globales para que el HTML pueda llamarlas
 let playNextTrack;
 let playPrevTrack;
-let togglePlayPause; // Hacemos esta global para el botón "Reproducir" de arriba
+let togglePlayPause; 
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. OBTENER ELEMENTOS DEL DOM
@@ -9,35 +9,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const trackTitle = document.getElementById('track-title');
     const trackArtistInfo = document.getElementById('track-artist-info'); 
     const visualizerCanvas = document.getElementById('frequency-visualizer');
+    const visualizerPlaceholder = document.querySelector('.visualizer-placeholder');
     const canvasCtx = visualizerCanvas.getContext('2d');
     
     // NUEVOS ELEMENTOS
     const progressBar = document.getElementById('progress-bar');
-    // NOTA: mixBtn y playAllBtn no están en el HTML que me diste, 
-    // pero se pueden añadir fácilmente si quieres esa funcionalidad
-    const mixBtn = document.querySelector('.mix-btn');
-    const playAllBtn = document.querySelector('.play-all-btn');
     const tracklistCardsContainer = document.getElementById('tracklist-cards'); // Contenedor de las CARDS
+    const primaryActionButton = document.querySelector('.player-actions .primary'); // Botón "Reproducir" de arriba
 
-    // Elemento de mensaje de error/info (ya en tu HTML)
+    // Elemento de mensaje de error/info
     const errorMessage = document.getElementById('error-message');
 
-    // 2. LISTA DE CANCIONES (¡CON DURACIÓN!)
-
+    // 2. LISTA DE CANCIONES (¡SOLO 6!)
     const tracks = [
-
-        { title: 'Once Upon a Time', src: './Audio/01. Once Upon A Time.mp3', duration: '1:03' },
-
-        { title: 'Fallen Down', src: './Audio/04. Fallen Down.mp3', duration: '1:48' },
-
-        { title: 'Your Best Friend', src: './Audio/03. Your Best Friend.mp3', duration: '0:30' },
-
-        { title: 'Ruins', src: './Audio/05. Ruins.mp3', duration: '1:33' },
-
-        { title: 'Heartache', src: './Audio/14. Heartache.mp3', duration: '1:49' },
-
-        { title: 'Snowdin Town', src: './Audio/22. Snowdin Town.mp3', duration: '1:16' }
-
+        { id: 1, title: 'Once Upon a Time', src: './Audio/01. Once Upon A Time.mp3', duration: '1:03' },
+        { id: 2, title: 'Fallen Down', src: './Audio/02. Fallen Down.mp3', duration: '0:58' },
+        { id: 3, title: 'Your Best Friend', src: './Audio/03. Your Best Friend.mp3', duration: '0:20' },
+        { id: 4, title: 'Ruins', src: './Audio/04. Ruins.mp3', duration: '1:30' },
+        { id: 5, title: 'Heartache', src: './Audio/05. Heartache.mp3', duration: '1:34' },
+        { id: 6, title: 'Snowdin Town', src: './Audio/06. Snowdin Town.mp3', duration: '1:17' }
     ];
 
     const audio = new Audio();
@@ -98,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         analyser.getByteFrequencyData(dataArray);
 
-        // Ajustar tamaño del canvas
         visualizerCanvas.width = visualizerCanvas.clientWidth;
         visualizerCanvas.height = visualizerCanvas.clientHeight;
         
@@ -110,15 +99,16 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < dataArray.length; i++) {
             const barHeight = (dataArray[i] / 255) * visualizerCanvas.height;
             
-            // Usamos el color secundario (Rojo/Amarillo) para el visualizador
+            // Colores Rojos/Amarillos para el visualizador (según tu paleta)
             const gradient = canvasCtx.createLinearGradient(0, visualizerCanvas.height - barHeight, 0, visualizerCanvas.height);
-            gradient.addColorStop(0, '#ff0000'); // Rojo
-            gradient.addColorStop(1, '#ffd700'); // Amarillo
+            gradient.addColorStop(0, '#ffd700'); 
+            gradient.addColorStop(1, '#ff0000'); 
             
             canvasCtx.fillStyle = gradient;
             canvasCtx.fillRect(x, visualizerCanvas.height - barHeight, barWidth, barHeight);
             x += barWidth + 2;
         }
+        visualizerPlaceholder.style.display = 'none';
     };
 
     const stopVisualizer = () => {
@@ -127,11 +117,11 @@ document.addEventListener('DOMContentLoaded', () => {
             animationId = null;
         }
         if (canvasCtx) {
-            // Limpiar el canvas
             visualizerCanvas.width = visualizerCanvas.clientWidth;
             visualizerCanvas.height = visualizerCanvas.clientHeight;
             canvasCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
         }
+        visualizerPlaceholder.style.display = 'flex';
     };
     
     // 4. LÓGICA DEL REPRODUCTOR
@@ -139,7 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateTrackInfo = () => {
         const track = tracks[currentTrackIndex];
         trackTitle.textContent = track.title;
-        // La duración real se actualiza cuando el audio está listo (loadedmetadata)
         trackArtistInfo.textContent = `Toby Fox · ${track.duration || '--:--'}`; 
 
         // Actualizar el estado 'active' de las tarjetas
@@ -158,21 +147,19 @@ document.addEventListener('DOMContentLoaded', () => {
         audio.load();
         progressBar.value = 0;
         
-        // El botón principal de Reproducir/Pausa está fuera de esta función,
-        // así que lo actualizamos si está reproduciendo.
         if (!audio.paused) {
             playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+            primaryActionButton.innerHTML = '<i class="fa-solid fa-play"></i> Reproducir';
         }
     };
     
-    // Hacemos togglePlayPause global para el botón "Reproducir" del player-header
+    // Hacemos togglePlayPause global para los botones Play/Pause
     togglePlayPause = (forcePlay = false) => {
         if (!audio.src) {
             loadTrack(0);
         }
         
         if (audio.paused || forcePlay) {
-            // Se requiere interacción del usuario para iniciar el AudioContext
             if (!isUserInteraction) {
                 if (!initAudioContext()) return;
                 isUserInteraction = true;
@@ -187,41 +174,33 @@ document.addEventListener('DOMContentLoaded', () => {
             
             audio.play().then(() => {
                 playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-                // Cambiamos el icono del botón grande de Reproducir/Pausa
-                document.querySelector('.player-actions .primary').innerHTML = '<i class="fa-solid fa-pause"></i> Pausar';
+                primaryActionButton.innerHTML = '<i class="fa-solid fa-pause"></i> Pausar';
                 drawVisualizer();
             }).catch(error => {
-                showError("Error al reproducir. Revisa la ruta de tus archivos de audio.");
+                showError("Error al reproducir. Revisa la ruta de tus archivos de audio en ./Audio/");
                 playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                primaryActionButton.innerHTML = '<i class="fa-solid fa-play"></i> Reproducir';
             });
         } else {
             audio.pause();
             playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
-            document.querySelector('.player-actions .primary').innerHTML = '<i class="fa-solid fa-play"></i> Reproducir';
+            primaryActionButton.innerHTML = '<i class="fa-solid fa-play"></i> Reproducir';
             stopVisualizer();
         }
     };
 
     playNextTrack = () => {
-        let nextIndex;
-        if (isShuffling) {
-            let randomIndex;
-            do {
-                randomIndex = Math.floor(Math.random() * tracks.length);
-            } while (randomIndex === currentTrackIndex);
-            nextIndex = randomIndex;
-        } else {
-            nextIndex = (currentTrackIndex + 1) % tracks.length;
-        }
+        let nextIndex = (currentTrackIndex + 1) % tracks.length;
+        // La lógica de Shuffle (Mezcla) puede implementarse aquí si añades el botón 'mix-btn'
         
         loadTrack(nextIndex);
         if (!audio.paused || isUserInteraction) {
-            setTimeout(() => togglePlayPause(true), 100); // Forzar la reproducción
+            setTimeout(() => togglePlayPause(true), 100); 
         }
     };
 
     playPrevTrack = () => {
-        // Si han pasado más de 3 segundos, reinicia la canción, si no, va a la anterior
+        // Si han pasado más de 3 segundos, reinicia la canción
         if (audio.currentTime > 3) {
             audio.currentTime = 0;
             return;
@@ -230,27 +209,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const prevIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
         loadTrack(prevIndex);
         if (!audio.paused || isUserInteraction) {
-            setTimeout(() => togglePlayPause(true), 100); // Forzar la reproducción
+            setTimeout(() => togglePlayPause(true), 100); 
         }
-    };
-
-    const handleMixToggle = () => {
-        isShuffling = !isShuffling;
-        if (mixBtn) {
-            mixBtn.classList.toggle('active', isShuffling);
-            mixBtn.innerHTML = isShuffling 
-                ? '<i class="fa-solid fa-shuffle"></i> Mezcla ACTIVA'
-                : '<i class="fa-solid fa-shuffle"></i> Mezclar';
-        }
-        showError(isShuffling ? 'Mezcla (Shuffle) activada.' : 'Mezcla (Shuffle) desactivada.');
-    };
-
-    const handlePlayAll = () => {
-        loadTrack(0);
-        isShuffling = false; 
-        if (mixBtn) mixBtn.classList.remove('active');
-        setTimeout(() => togglePlayPause(true), 100);
-        showError('Reproducción en orden iniciada.');
     };
 
     // 5. RENDERIZACIÓN DE LA LISTA (COMO CARDS)
@@ -267,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             card.addEventListener('click', () => {
                 loadTrack(index);
-                setTimeout(() => togglePlayPause(true), 100); // Forzar la reproducción
+                setTimeout(() => togglePlayPause(true), 100); 
             });
             tracklistCardsContainer.appendChild(card);
         });
@@ -302,13 +262,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 7. ASIGNACIÓN DE EVENT LISTENERS Y SETUP
     
-    // Botón principal de Play/Pause en los controles inferiores
     playPauseBtn.addEventListener('click', () => togglePlayPause());
     
-    // Botones de acción (si existen en el HTML final)
-    if (mixBtn) mixBtn.addEventListener('click', handleMixToggle);
-    if (playAllBtn) playAllBtn.addEventListener('click', handlePlayAll);
-
     // Navegación (Música/Arte)
     document.querySelectorAll('.nav-top-btn').forEach(item => {
         item.addEventListener('click', (event) => {
@@ -322,11 +277,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Funcionalidad para botones dummy
+    // Funcionalidad para botones dummy (ej. Quitar, Listas, Volumen)
     document.querySelectorAll('.dummy-action').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
-            const text = e.currentTarget.textContent.trim().replace(/[\u{1F600}-\u{1F6FF}]/gu, '').trim(); // Limpiar emojis si los hay
+            let text = e.currentTarget.textContent.trim().replace(/[\u{1F600}-\u{1F6FF}]/gu, '').trim(); 
+            if (text === '') { // Para botones solo de iconos
+                text = e.currentTarget.querySelector('i').className.split('-').pop();
+            }
             showError(`La función "${text}" es sólo visual/dúmmy.`);
         });
     });
@@ -339,9 +297,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inicialización
     renderTracklist();
-    loadTrack(0);
+    loadTrack(0); // Carga la primera canción al iniciar
     
-    // Ajuste de Canvas para el visualizador
+    // Ajuste de Canvas
     const resizeCanvas = () => {
         visualizerCanvas.width = visualizerCanvas.clientWidth;
         visualizerCanvas.height = visualizerCanvas.clientHeight;
