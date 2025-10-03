@@ -1,14 +1,14 @@
 :root {
-    --bg-dark: #121212; /* Fondo principal (negro) */
-    --bg-content: #1e1e1e; /* Fondo del contenido principal */
-    --sidebar-color: #3b2866; /* Morado Oscuro de la barra lateral */
-    --primary-color: #ffd700; /* Amarillo/Dorado (Botones de Reproducir) */
-    --secondary-color: #ff0000; /* Rojo (Énfasis en la reproducción/visualizador) */
-    --text-color: #ffffff; /* Texto principal */
-    --text-muted: #aaaaaa; /* Texto secundario */
-    --track-active-bg: #444444; /* Fondo para tarjeta de canción activa */
+    --bg-dark: #121212; 
+    --bg-content: #1e1e1e; 
+    --footer-color: #3b2866; /* Morado Oscuro para la nueva barra inferior/footer */
+    --primary-color: #ffd700; 
+    --secondary-color: #ff0000; 
+    --text-color: #ffffff; 
+    --text-muted: #aaaaaa; 
+    --track-active-bg: #444444; 
     --border-color: #333333;
-    --play-btn-bg: #5a3c9b; /* Morado más claro para el botón de play en colecciones */
+    --play-btn-bg: #5a3c9b; 
 }
 
 body {
@@ -23,275 +23,183 @@ body {
     min-height: 100vh;
 }
 
-/* --- ESTRUCTURA PRINCIPAL (Dashboard) --- */
-.dashboard-container {
+/* --- ESTRUCTURA PRINCIPAL (App de una columna) --- */
+.app-container {
     display: flex;
+    flex-direction: column; /* Cambiado a columna */
     width: 95vw;
-    max-width: 1200px; /* Tamaño máximo para simular escritorio */
-    height: 90vh; /* Altura de la ventana */
-    background-color: var(--bg-dark);
+    max-width: 600px; /* Tamaño máximo de una app/móvil */
+    height: 98vh;
+    background-color: var(--bg-content);
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
 }
 
-/* --- 1. BARRA LATERAL (Izquierda) --- */
-.sidebar {
-    width: 280px;
-    background-color: var(--sidebar-color);
+.main-content {
+    flex-grow: 1;
     padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    flex-shrink: 0;
-    overflow-y: auto;
+    background-color: var(--bg-content);
+    overflow-y: auto; /* Scroll en el contenido principal */
+    padding-bottom: 0;
 }
 
-.sidebar-header p { font-size: 0.8em; margin: 0; color: var(--text-muted); }
-.sidebar-header h1 { font-size: 2em; margin: 3px 0 0 0; }
-
-/* Colecciones */
-.collections-section, .shortcuts-section {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+/* --- 2. BARRA DE NAVEGACIÓN INFERIOR (FOOTER) --- */
+.app-footer {
+    flex-shrink: 0; /* No se encoge */
+    background-color: var(--footer-color);
+    padding: 15px 20px;
+    color: var(--text-color);
+    border-top: 1px solid var(--border-color);
 }
-.collections-section h2, .shortcuts-section h2 { 
-    font-size: 1em; 
+
+.footer-header p { font-size: 0.8em; margin: 0; color: var(--text-muted); }
+.footer-header h1 { font-size: 1.5em; margin: 3px 0 15px 0; }
+
+.collections-section h2 { 
+    font-size: 0.9em; 
     text-transform: uppercase; 
     color: var(--text-muted); 
-    margin: 0; 
+    margin: 0 0 10px 0;
 }
+
+.collection-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto; /* Scroll horizontal para las colecciones */
+    padding-bottom: 5px; /* Espacio para la barra de scroll */
+}
+
+/* Estilos de las colecciones, ahora en horizontal */
 .collection-item {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
+    align-items: flex-start;
+    padding: 10px;
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 6px;
+    min-width: 120px; /* Ancho fijo para las tarjetas horizontales */
     transition: background-color 0.2s;
     cursor: pointer;
+    position: relative;
 }
-.collection-item span { font-weight: bold; }
-.collection-item small { color: var(--text-muted); font-size: 0.8em; }
+.collection-item span { font-weight: bold; font-size: 0.9em; }
+.collection-item small { color: var(--text-muted); font-size: 0.7em; }
 .play-small-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
     background-color: var(--play-btn-bg);
     color: var(--text-color);
     border: none;
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 0.7em;
 }
 
-/* Atajos */
-.shortcut-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
-.shortcut-btn {
-    background-color: var(--bg-content);
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.2s, color 0.2s;
-}
-.shortcut-btn:hover { background-color: #333; }
-.shortcut-btn.play-all-btn { 
-    background-color: var(--primary-color); 
-    color: var(--bg-dark); 
-    font-weight: bold;
-    border-color: var(--primary-color);
-}
-.shortcut-btn.mix-btn.active { 
-    background-color: #5a3c9b; 
-    color: var(--text-color); 
-    font-weight: bold;
-    border-color: var(--play-btn-bg);
-}
-.shortcut-btn.download-btn, .shortcut-btn.flowey-btn { grid-column: span 2; }
 
-
-/* --- 2. CONTENIDO PRINCIPAL (Derecha) --- */
-.main-content {
-    flex-grow: 1;
-    padding: 20px;
-    background-color: var(--bg-content);
-    overflow-y: auto;
-}
+/* --- CONTENIDO PRINCIPAL (ajustes) --- */
 
 /* Navegación Superior */
 .top-navigation {
     display: flex;
-    justify-content: flex-start; 
-    gap: 15px;
+    justify-content: space-around; /* Repartir el espacio */
+    gap: 10px;
     margin-bottom: 20px;
 }
 .nav-top-btn {
-    background: var(--bg-content);
+    flex-grow: 1; /* Para que ocupen el mismo ancho */
+    text-align: center;
+    background: var(--bg-dark);
     color: var(--text-color);
     border: 1px solid var(--border-color);
-    padding: 8px 15px;
+    padding: 8px 10px;
     border-radius: 20px;
     cursor: pointer;
     font-size: 0.9em;
-    transition: background-color 0.2s;
 }
-.nav-top-btn.active {
-    background-color: var(--primary-color);
-    color: var(--bg-dark);
-    font-weight: bold;
-    border-color: var(--primary-color);
-}
-.nav-top-btn:not(.active):hover { background-color: #333; }
-
 
 /* Reproductor Superior y Acciones */
 .player-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
+    flex-direction: column; /* En una app, el título va encima de las acciones */
+    align-items: flex-start;
+    padding: 10px;
     background-color: var(--bg-dark);
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 .track-info {
-    display: flex;
-    flex-direction: column;
+    margin-bottom: 10px;
 }
-.current-track-title { font-size: 1.3em; font-weight: bold; }
-.track-artist { font-size: 0.8em; color: var(--text-muted); }
-.player-actions button { margin-left: 10px; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-.player-actions .secondary { background-color: #333; color: var(--text-color); border: none; }
-.player-actions .primary { background-color: var(--primary-color); color: var(--bg-dark); border: none; }
+.player-actions {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+.player-actions button { margin: 0; flex-grow: 1; }
+.player-actions .secondary { background-color: #333; color: var(--text-color); border: none; margin-right: 5px; }
+.player-actions .primary { background-color: var(--primary-color); color: var(--bg-dark); border: none; margin-left: 5px; }
 
 
 /* Visualizador y Controles Inferiores */
-.player-visualizer-section {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
 .visualizer-container {
     width: 100%;
-    height: 200px; /* Altura consistente para el visualizador */
-    position: relative;
-    background-color: #111;
-    border-radius: 6px;
-}
-#frequency-visualizer {
-    width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: block;
-}
-.visualizer-placeholder {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--text-muted);
-    font-size: 1.2em;
-    opacity: 0.5;
-    pointer-events: none;
+    height: 150px; /* Reducir altura para móvil */
 }
 
 /* Canciones Marcadas (Cards) */
-.marked-tracks-container {
-    padding: 10px 0;
-}
-.marked-tracks-container h2 { font-size: 1em; color: var(--text-color); margin-bottom: 15px; }
 .marked-tracks {
     display: grid;
-    /* 4 columnas por defecto, ajustables al tamaño */
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
+    /* Reducido a 2 columnas principales para simular mejor las tarjetas en móvil */
+    grid-template-columns: 1fr 1fr; 
     gap: 10px;
 }
 .marked-card {
-    padding: 15px;
-    background-color: var(--bg-dark); 
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: border-color 0.2s, background-color 0.2s;
+    padding: 12px;
 }
-.marked-card:hover { border-color: var(--primary-color); }
-.marked-card.playing {
-    background-color: var(--track-active-bg);
-    border-color: var(--primary-color);
-}
-.marked-card p { margin: 0; font-size: 1em; font-weight: bold; }
-.marked-card small { color: var(--text-muted); font-size: 0.8em; }
 
 /* Controles de Reproducción */
 .playback-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    padding-top: 10px;
-    width: 100%; /* Ocupa todo el ancho */
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan si es necesario */
+    justify-content: center;
+    gap: 10px;
+    padding-top: 5px;
 }
 .transport-controls {
-    display: flex; gap: 15px; 
+    order: 2; /* Mueve los botones de play al centro inferior */
+    width: 100%;
+    justify-content: center;
+}
+.progress-container { 
+    order: 1; /* Mueve la barra de progreso arriba */
+    width: 100%;
+    margin: 0 0 10px 0;
+}
+.volume-controls { 
+    order: 3; /* Mantiene los controles de volumen abajo */
+    width: 100%;
+    justify-content: space-between;
 }
 .control-btn {
-    background: none;
-    border: none;
-    color: var(--primary-color);
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: color 0.2s;
+    font-size: 1em;
 }
-.control-btn:hover { color: var(--text-color); }
 .play-pause-lg {
-    font-size: 2.5em !important;
+    font-size: 2em !important; /* Más pequeño para móvil */
 }
 
-/* Barra de Progreso */
-.progress-container { flex-grow: 1; margin: 0 15px; }
-.progress-slider {
-    width: 100%;
-    -webkit-appearance: none; appearance: none;
-    height: 4px; 
-    background: var(--border-color);
-    border-radius: 5px;
-    cursor: pointer;
-}
-.progress-slider::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none;
-    width: 12px; height: 12px;
-    background: var(--primary-color); 
-    border-radius: 50%;
-    cursor: pointer;
-    margin-top: -4px; 
-}
-
-/* Controles de Volumen/Acción */
-.volume-controls { display: flex; align-items: center; gap: 10px; }
-.add-to-list-btn { font-size: 0.8em; padding: 8px 12px; border-radius: 20px; background-color: var(--bg-dark); border: 1px solid var(--border-color); color: var(--primary-color); }
-
-/* --- SECCIONES SECUNDARIAS --- */
-.content-section { display: none; }
+/* SECCIONES SECUNDARIAS */
+.content-section { padding-bottom: 20px; }
 .content-section.active { display: block; }
 
 /* Utilidades */
 .dummy-action { opacity: 0.6; cursor: default !important; }
 .error-message { 
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: white; 
-    text-align: center; 
-    padding: 8px 15px; 
-    display: none; 
-    background-color: var(--secondary-color); 
-    border-radius: 4px;
-    z-index: 100;
+    font-size: 0.8em;
+    bottom: 5px;
 }
