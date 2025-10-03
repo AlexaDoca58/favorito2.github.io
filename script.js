@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. OBTENER ELEMENTOS DEL DOM
     const playPauseBtn = document.getElementById('play-pause-btn');
     const trackTitle = document.getElementById('track-title');
-    const trackArtistInfo = document.getElementById('track-artist-info'); // Info de Toby Fox
+    const trackArtistInfo = document.getElementById('track-artist-info'); 
     const visualizerCanvas = document.getElementById('frequency-visualizer');
     const canvasCtx = visualizerCanvas.getContext('2d');
     
@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // 2. LISTA DE CANCIONES (¡CON DURACIÓN Y NOMBRES CORREGIDOS!)
+    // NOTA: Asegúrate de que los archivos .mp3 existan en la ruta './Audio/'
     const tracks = [
         { title: 'Once Upon a Time', src: './Audio/01. Once Upon A Time.mp3', duration: '1:03' },
         { title: 'Fallen Down', src: './Audio/04. Fallen Down.mp3', duration: '1:48' },
@@ -52,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const showError = (message) => {
         errorMessage.textContent = message;
         errorMessage.style.display = 'block';
-        // Ajustamos la posición del mensaje
         errorMessage.style.backgroundColor = message.includes('Error') ? '#ff4444' : '#ffd700';
         errorMessage.style.color = message.includes('Error') ? 'white' : 'black';
         setTimeout(() => {
@@ -88,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         animationId = requestAnimationFrame(drawVisualizer);
         
-        // Ajuste de tamaño del canvas
         visualizerCanvas.width = visualizerCanvas.clientWidth;
         visualizerCanvas.height = visualizerCanvas.clientHeight;
         
@@ -117,9 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cancelAnimationFrame(animationId);
             animationId = null;
         }
-        if (canvasCtx) {
-            // No limpiar el canvas para que se quede vacío y se vea el placeholder
-        }
+        // Dejar el canvas con el placeholder
     };
     
     // 4. LÓGICA DEL REPRODUCTOR
@@ -133,12 +130,10 @@ document.addEventListener('DOMContentLoaded', () => {
         audio.src = currentTrack.src;
         
         trackTitle.textContent = currentTrack.title;
-        // Muestra el nombre del artista y la duración estática de la tarjeta
         trackArtistInfo.textContent = `Toby Fox · ${currentTrack.duration}`; 
         
         audio.load();
         progressBar.value = 0;
-
 
         // Actualizar el estado 'playing' de las cards
         document.querySelectorAll('.marked-card').forEach((card, i) => {
@@ -235,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.dataset.index = index; 
             
             card.innerHTML = `
-                <p>${track.title.split('. ').pop()}</p> 
+                <p>${track.title}</p>
                 <small>${track.duration}</small>
             `;
             
