@@ -1,7 +1,7 @@
 // Hacemos las funciones globales para que el HTML pueda llamarlas
 let playNextTrack;
 let playPrevTrack;
-let togglePlayPause; 
+let togglePlayPause; // Hacemos esta global para el botón "Reproducir" de arriba
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. OBTENER ELEMENTOS DEL DOM
@@ -9,25 +9,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const trackTitle = document.getElementById('track-title');
     const trackArtistInfo = document.getElementById('track-artist-info'); 
     const visualizerCanvas = document.getElementById('frequency-visualizer');
-    const visualizerPlaceholder = document.querySelector('.visualizer-placeholder');
+    const visualizerPlaceholder = document.querySelector('.visualizer-placeholder'); // Nuevo selector para el placeholder
     const canvasCtx = visualizerCanvas.getContext('2d');
     
     // NUEVOS ELEMENTOS
     const progressBar = document.getElementById('progress-bar');
+    // Estos se seleccionan aunque estén en el sidebar que se oculta
+    const mixBtn = document.querySelector('.mix-btn'); 
+    const playAllBtn = document.querySelector('.play-all-btn');
     const tracklistCardsContainer = document.getElementById('tracklist-cards'); // Contenedor de las CARDS
-    const primaryActionButton = document.querySelector('.player-actions .primary'); // Botón "Reproducir" de arriba
 
     // Elemento de mensaje de error/info
     const errorMessage = document.getElementById('error-message');
 
-    // 2. LISTA DE CANCIONES (¡SOLO 6!)
+
+    // 2. LISTA DE CANCIONES (¡CON DURACIÓN!)
     const tracks = [
-        { id: 1, title: 'Once Upon a Time', src: './Audio/01. Once Upon A Time.mp3', duration: '1:03' },
-        { id: 2, title: 'Fallen Down', src: './Audio/02. Fallen Down.mp3', duration: '0:58' },
-        { id: 3, title: 'Your Best Friend', src: './Audio/03. Your Best Friend.mp3', duration: '0:20' },
-        { id: 4, title: 'Ruins', src: './Audio/04. Ruins.mp3', duration: '1:30' },
-        { id: 5, title: 'Heartache', src: './Audio/05. Heartache.mp3', duration: '1:34' },
-        { id: 6, title: 'Snowdin Town', src: './Audio/06. Snowdin Town.mp3', duration: '1:17' }
+        { title: 'Once Upon a Time', src: './Audio/01. Once Upon A Time.mp3', duration: '1:03' },
+        { title: 'Fallen Down', src: './Audio/04. Fallen Down.mp3', duration: '1:48' },
+        { title: 'Your Best Friend', src: './Audio/03. Your Best Friend.mp3', duration: '0:30' },
+        { title: 'Ruins', src: './Audio/05. Ruins.mp3', duration: '1:33' },
+        { title: 'Heartache', src: './Audio/14. Heartache.mp3', duration: '1:49' },
+        { title: 'Snowdin Town', src: './Audio/22. Snowdin Town.mp3', duration: '1:16' }
     ];
 
     const audio = new Audio();
@@ -40,16 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let isUserInteraction = false;
     let isShuffling = false; 
 
-    // Función de Utilidad
-    const formatTime = (seconds) => {
-        const min = Math.floor(seconds / 60);
-        const sec = Math.floor(seconds % 60);
-        return `${min}:${sec.toString().padStart(2, '0')}`;
-    };
-
     const showError = (message) => {
         errorMessage.textContent = message;
         errorMessage.style.display = 'block';
+        // Ajustamos los colores del error al dashboard
+        errorMessage.style.backgroundColor = message.includes('Error') ? 'var(--secondary-color)' : 'var(--primary-color)';
+        errorMessage.style.color = message.includes('Error') ? 'white' : 'black';
         setTimeout(() => {
             errorMessage.style.display = 'none';
         }, 5000);
@@ -71,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     analyser.connect(audioContext.destination);
                 }
             } catch (error) {
-                showError('Error al inicializar el audio. Asegúrate de que el navegador lo soporte.');
+                showError('Error al inicializar el audio. El navegador lo bloqueó.');
                 return false;
             }
         }
@@ -79,34 +78,29 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const drawVisualizer = () => {
-        if (!analyser || audio.paused) {
-            stopVisualizer();
-            return;
-        }
+        if (!analyser) return;
         
         animationId = requestAnimationFrame(drawVisualizer);
         
-        analyser.getByteFrequencyData(dataArray);
-
         visualizerCanvas.width = visualizerCanvas.clientWidth;
         visualizerCanvas.height = visualizerCanvas.clientHeight;
         
+        analyser.getByteFrequencyData(dataArray);
         canvasCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
 
         const barWidth = (visualizerCanvas.width / dataArray.length) * 2.5;
         let x = 0;
 
         for (let i = 0; i < dataArray.length; i++) {
-            const barHeight = (dataArray[i] / 255) * visualizerCanvas.height;
+            const barHeight = Math.min((dataArray[i] / 255) * visualizerCanvas.height, visualizerCanvas.height); 
             
-            // Colores Rojos/Amarillos para el visualizador (según tu paleta)
             const gradient = canvasCtx.createLinearGradient(0, visualizerCanvas.height - barHeight, 0, visualizerCanvas.height);
-            gradient.addColorStop(0, '#ffd700'); 
-            gradient.addColorStop(1, '#ff0000'); 
+            gradient.addColorStop(0, '#ffd700'); // Dorado
+            gradient.addColorStop(1, '#ff0000'); // Rojo
             
             canvasCtx.fillStyle = gradient;
             canvasCtx.fillRect(x, visualizerCanvas.height - barHeight, barWidth, barHeight);
-            x += barWidth + 2;
+            x += barWidth + 2; 
         }
         visualizerPlaceholder.style.display = 'none';
     };
@@ -116,49 +110,45 @@ document.addEventListener('DOMContentLoaded', () => {
             cancelAnimationFrame(animationId);
             animationId = null;
         }
-        if (canvasCtx) {
-            visualizerCanvas.width = visualizerCanvas.clientWidth;
-            visualizerCanvas.height = visualizerCanvas.clientHeight;
-            canvasCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-        }
-        visualizerPlaceholder.style.display = 'flex';
+        visualizerPlaceholder.style.display = 'block'; // Muestra el placeholder
     };
     
     // 4. LÓGICA DEL REPRODUCTOR
     
-    const updateTrackInfo = () => {
-        const track = tracks[currentTrackIndex];
-        trackTitle.textContent = track.title;
-        trackArtistInfo.textContent = `Toby Fox · ${track.duration || '--:--'}`; 
-
-        // Actualizar el estado 'active' de las tarjetas
-        document.querySelectorAll('.track-card').forEach((card, i) => {
-            card.classList.toggle('active', i === currentTrackIndex);
-        });
-    };
-
-    const loadTrack = (index) => {
+    const loadTrack = (index, autoPlay = false) => {
         stopVisualizer();
-        
+        const wasPlaying = !audio.paused;
+
         currentTrackIndex = index;
-        audio.src = tracks[currentTrackIndex].src;
-        updateTrackInfo();
+        const currentTrack = tracks[currentTrackIndex];
+        audio.src = currentTrack.src;
+        
+        trackTitle.textContent = currentTrack.title;
+        trackArtistInfo.textContent = `Toby Fox · ${currentTrack.duration}`; 
         
         audio.load();
         progressBar.value = 0;
+
+        document.querySelectorAll('.marked-card').forEach((card, i) => {
+             card.classList.toggle('playing', i === index);
+        });
         
-        if (!audio.paused) {
-            playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
-            primaryActionButton.innerHTML = '<i class="fa-solid fa-play"></i> Reproducir';
+        if (wasPlaying || autoPlay) {
+            setTimeout(() => togglePlayPause(true), 100);
+        } else {
+             playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+             document.querySelector('.player-actions .primary').innerHTML = '<i class="fa-solid fa-play"></i> Reproducir';
         }
     };
-    
-    // Hacemos togglePlayPause global para los botones Play/Pause
+
     togglePlayPause = (forcePlay = false) => {
         if (!audio.src) {
-            loadTrack(0);
+            loadTrack(0, true);
+            return;
         }
         
+        const primaryActionButton = document.querySelector('.player-actions .primary');
+
         if (audio.paused || forcePlay) {
             if (!isUserInteraction) {
                 if (!initAudioContext()) return;
@@ -175,9 +165,9 @@ document.addEventListener('DOMContentLoaded', () => {
             audio.play().then(() => {
                 playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
                 primaryActionButton.innerHTML = '<i class="fa-solid fa-pause"></i> Pausar';
-                drawVisualizer();
+                drawVisualizer(); 
             }).catch(error => {
-                showError("Error al reproducir. Revisa la ruta de tus archivos de audio en ./Audio/");
+                showError("Error de reproducción. Verifica que el archivo de audio exista. (Sugerencia: Ejecuta en un servidor local).");
                 playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
                 primaryActionButton.innerHTML = '<i class="fa-solid fa-play"></i> Reproducir';
             });
@@ -189,82 +179,108 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    playNextTrack = () => {
-        let nextIndex = (currentTrackIndex + 1) % tracks.length;
-        // La lógica de Shuffle (Mezcla) puede implementarse aquí si añades el botón 'mix-btn'
-        
-        loadTrack(nextIndex);
-        if (!audio.paused || isUserInteraction) {
-            setTimeout(() => togglePlayPause(true), 100); 
+    playNextTrack = () => { 
+        let nextIndex;
+        if (isShuffling) {
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * tracks.length);
+            } while (randomIndex === currentTrackIndex);
+            nextIndex = randomIndex;
+        } else {
+            nextIndex = (currentTrackIndex + 1) % tracks.length;
         }
+        
+        loadTrack(nextIndex, true);
     };
 
-    playPrevTrack = () => {
-        // Si han pasado más de 3 segundos, reinicia la canción
+    playPrevTrack = () => { 
+        // Reinicia la canción si ya ha avanzado 3 segundos
         if (audio.currentTime > 3) {
-            audio.currentTime = 0;
-            return;
+             audio.currentTime = 0;
+             return;
         }
         
         const prevIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
-        loadTrack(prevIndex);
-        if (!audio.paused || isUserInteraction) {
-            setTimeout(() => togglePlayPause(true), 100); 
-        }
+        loadTrack(prevIndex, true);
     };
 
-    // 5. RENDERIZACIÓN DE LA LISTA (COMO CARDS)
+    const handleMixToggle = () => {
+        isShuffling = !isShuffling;
+        // Solo toggles la clase y el texto si el botón existe
+        if (mixBtn) {
+            mixBtn.classList.toggle('active', isShuffling);
+            mixBtn.innerHTML = isShuffling 
+                ? '<i class="fa-solid fa-shuffle"></i> Mezcla ACTIVA'
+                : '<i class="fa-solid fa-shuffle"></i> Mezclar favoritos';
+        }
+        
+        showError(isShuffling ? 'Mezcla (Shuffle) activada.' : 'Mezcla (Shuffle) desactivada.');
+    };
+
+    const handlePlayAll = () => {
+        loadTrack(0, true);
+        if (isShuffling && mixBtn) {
+            isShuffling = false; 
+            mixBtn.classList.remove('active');
+            mixBtn.innerHTML = '<i class="fa-solid fa-shuffle"></i> Mezclar favoritos';
+        }
+        showError('Reproducción en orden iniciada.');
+    };
+
+    // FUNCIÓN PARA CREAR LAS CARDS
     const renderTracklist = () => {
-        tracklistCardsContainer.innerHTML = '';
+        tracklistCardsContainer.innerHTML = ''; 
+        
         tracks.forEach((track, index) => {
             const card = document.createElement('div');
-            card.classList.add('track-card');
-            card.dataset.index = index;
+            card.className = 'marked-card'; // Usa la clase del CSS
+            card.dataset.index = index; 
+            
+            // Limpia el número del título (ej: 01. Once Upon a Time -> Once Upon a Time)
+            const cleanedTitle = track.title.replace(/^\d+\.\s*/, ''); 
+            
             card.innerHTML = `
-                <span class="track-id">${track.id.toString().padStart(2, '0')}</span>
-                <span class="track-title">${track.title}</span>
-                <span class="track-duration">${track.duration}</span>
+                <p>${cleanedTitle}</p> 
+                <small>${track.duration}</small>
             `;
+            
             card.addEventListener('click', () => {
-                loadTrack(index);
-                setTimeout(() => togglePlayPause(true), 100); 
+                loadTrack(index, true); 
             });
+            
             tracklistCardsContainer.appendChild(card);
         });
     };
     
-    // 6. LÓGICA DE LA BARRA DE PROGRESO
+    // 5. LÓGICA DE LA BARRA DE PROGRESO
     audio.addEventListener('timeupdate', () => {
         const currentTime = audio.currentTime;
         const duration = audio.duration;
         
-        if (!isNaN(duration)) {
+        if (!isNaN(duration) && isFinite(duration)) {
             const progressPercent = (currentTime / duration) * 100;
             progressBar.value = progressPercent;
         }
     });
-
-    audio.addEventListener('loadedmetadata', () => {
-        if (!isNaN(audio.duration)) {
-            // Actualizar la duración en la cabecera cuando el archivo está listo
-            const durationText = formatTime(audio.duration);
-            trackArtistInfo.textContent = `Toby Fox · ${durationText}`;
-        }
-    });
-
+    
     progressBar.addEventListener('input', () => {
         const duration = audio.duration;
-        if (!isNaN(duration)) {
+        
+        if (!isNaN(duration) && isFinite(duration)) {
             const newTime = (progressBar.value * duration) / 100;
             audio.currentTime = newTime;
         }
     });
 
-    // 7. ASIGNACIÓN DE EVENT LISTENERS Y SETUP
+    // 6. ASIGNACIÓN DE EVENT LISTENERS Y SETUP
+    playPauseBtn.addEventListener('click', () => togglePlayPause(false));
     
-    playPauseBtn.addEventListener('click', () => togglePlayPause());
-    
-    // Navegación (Música/Arte)
+    // Solo asigna eventos si existen los botones (de la barra lateral)
+    if (mixBtn) mixBtn.addEventListener('click', handleMixToggle);
+    if (playAllBtn) playAllBtn.addEventListener('click', handlePlayAll);
+
+    // Navegación (para cambiar entre Música, Listas y Arte)
     document.querySelectorAll('.nav-top-btn').forEach(item => {
         item.addEventListener('click', (event) => {
             document.querySelectorAll('.nav-top-btn').forEach(i => i.classList.remove('active'));
@@ -274,16 +290,20 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.toggle('active', section.id === `${sectionId}-section`);
             });
+            if(event.currentTarget.classList.contains('dummy-action')) {
+                showError(`La sección "Listas" es sólo visual/dúmmy.`);
+            }
         });
     });
     
-    // Funcionalidad para botones dummy (ej. Quitar, Listas, Volumen)
+    // Funcionalidad para botones dummy
     document.querySelectorAll('.dummy-action').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
-            let text = e.currentTarget.textContent.trim().replace(/[\u{1F600}-\u{1F6FF}]/gu, '').trim(); 
+            let text = e.currentTarget.textContent.trim();
             if (text === '') { // Para botones solo de iconos
-                text = e.currentTarget.querySelector('i').className.split('-').pop();
+                const icon = e.currentTarget.querySelector('i');
+                text = icon ? icon.className.split('-').pop() : 'Acción';
             }
             showError(`La función "${text}" es sólo visual/dúmmy.`);
         });
@@ -297,13 +317,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inicialización
     renderTracklist();
-    loadTrack(0); // Carga la primera canción al iniciar
-    
-    // Ajuste de Canvas
-    const resizeCanvas = () => {
-        visualizerCanvas.width = visualizerCanvas.clientWidth;
-        visualizerCanvas.height = visualizerCanvas.clientHeight;
-    };
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+    loadTrack(currentTrackIndex); 
 });
