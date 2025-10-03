@@ -1,7 +1,7 @@
 :root {
     --bg-dark: #121212; /* Fondo principal (negro) */
     --bg-content: #1e1e1e; /* Fondo del contenido principal */
-    --sidebar-color: #3b2866; /* Morado Oscuro de la barra lateral (como en tu imagen) */
+    --sidebar-color: #3b2866; /* Morado Oscuro de la barra lateral */
     --primary-color: #ffd700; /* Amarillo/Dorado (Botones de Reproducir) */
     --secondary-color: #ff0000; /* Rojo (Énfasis en la reproducción/visualizador) */
     --text-color: #ffffff; /* Texto principal */
@@ -27,7 +27,7 @@ body {
 .dashboard-container {
     display: flex;
     width: 95vw;
-    max-width: 1200px;
+    max-width: 1200px; /* Tamaño de escritorio o tablet grande */
     height: 90vh;
     background-color: var(--bg-dark);
     border-radius: 12px;
@@ -111,7 +111,7 @@ body {
     border-color: var(--primary-color);
 }
 .shortcut-btn.mix-btn.active { 
-    background-color: #5a3c9b; /* Morado para el shuffle activo */
+    background-color: #5a3c9b; 
     color: var(--text-color); 
     font-weight: bold;
     border-color: var(--play-btn-bg);
@@ -130,7 +130,7 @@ body {
 /* Navegación Superior */
 .top-navigation {
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-start; 
     gap: 15px;
     margin-bottom: 20px;
 }
@@ -182,7 +182,7 @@ body {
 }
 .visualizer-container {
     width: 100%;
-    height: 200px;
+    height: 200px; /* Altura del visualizador aumentada */
     position: relative;
     background-color: #111;
     border-radius: 6px;
@@ -208,7 +208,7 @@ body {
 .marked-tracks-container h2 { font-size: 1em; color: var(--text-color); margin-bottom: 15px; }
 .marked-tracks {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* 3 columnas o más */
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* Tarjetas flexibles */
     gap: 10px;
 }
 .marked-card {
@@ -217,7 +217,7 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     cursor: pointer;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, background-color 0.2s;
 }
 .marked-card:hover { border-color: var(--primary-color); }
 .marked-card.playing {
