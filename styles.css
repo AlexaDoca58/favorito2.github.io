@@ -1,14 +1,14 @@
 :root {
-    --bg-dark: #121212; 
-    --bg-content: #1e1e1e; 
-    --footer-color: #3b2866; /* Morado Oscuro para la nueva barra inferior/footer */
-    --primary-color: #ffd700; 
-    --secondary-color: #ff0000; 
-    --text-color: #ffffff; 
-    --text-muted: #aaaaaa; 
-    --track-active-bg: #444444; 
+    --bg-dark: #121212; /* Fondo principal (negro) */
+    --bg-content: #1e1e1e; /* Fondo del contenido principal */
+    --sidebar-color: #3b2866; /* Morado Oscuro de la barra lateral */
+    --primary-color: #ffd700; /* Amarillo/Dorado (Botones de Reproducir) */
+    --secondary-color: #ff0000; /* Rojo (Énfasis en la reproducción/visualizador) */
+    --text-color: #ffffff; /* Texto principal */
+    --text-muted: #aaaaaa; /* Texto secundario */
+    --track-active-bg: #444444; /* Fondo para tarjeta de canción activa */
     --border-color: #333333;
-    --play-btn-bg: #5a3c9b; 
+    --play-btn-bg: #5a3c9b; /* Morado más claro para el botón de play en colecciones */
 }
 
 body {
@@ -17,189 +17,149 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    /* QUITAMOS el centrado para simular la columna de la app */
 }
 
-/* --- ESTRUCTURA PRINCIPAL (App de una columna) --- */
-.app-container {
+/* --- ESTRUCTURA PRINCIPAL (Dashboard) --- */
+.dashboard-container {
     display: flex;
-    flex-direction: column; /* Cambiado a columna */
-    width: 95vw;
-    max-width: 600px; /* Tamaño máximo de una app/móvil */
-    height: 98vh;
-    background-color: var(--bg-content);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+    /* AJUSTE CLAVE: Hacemos que ocupe el 100% para la columna de AppMachine */
+    width: 100%; 
+    max-width: none; /* Quitamos el max-width */
+    height: auto; /* Dejamos que la altura crezca */
+    background-color: var(--bg-dark);
+    border-radius: 0; /* Sin bordes redondeados */
+    overflow: visible;
+    box-shadow: none; /* Sin sombra */
 }
 
+/* --- 1. BARRA LATERAL (Izquierda) --- */
+/* AJUSTE CLAVE: OCULTAMOS COMPLETAMENTE LA BARRA LATERAL para AppMachine */
+.sidebar {
+    display: none; 
+}
+
+/* --- 2. CONTENIDO PRINCIPAL (Derecha) --- */
 .main-content {
     flex-grow: 1;
-    padding: 20px;
+    padding: 15px; /* Reducimos un poco el padding */
     background-color: var(--bg-content);
-    overflow-y: auto; /* Scroll en el contenido principal */
-    padding-bottom: 0;
+    overflow-y: visible; /* Permitimos el scroll normal de la app */
+    min-height: 100vh; /* Para asegurar que el fondo se vea en toda la pantalla */
 }
-
-/* --- 2. BARRA DE NAVEGACIÓN INFERIOR (FOOTER) --- */
-.app-footer {
-    flex-shrink: 0; /* No se encoge */
-    background-color: var(--footer-color);
-    padding: 15px 20px;
-    color: var(--text-color);
-    border-top: 1px solid var(--border-color);
-}
-
-.footer-header p { font-size: 0.8em; margin: 0; color: var(--text-muted); }
-.footer-header h1 { font-size: 1.5em; margin: 3px 0 15px 0; }
-
-.collections-section h2 { 
-    font-size: 0.9em; 
-    text-transform: uppercase; 
-    color: var(--text-muted); 
-    margin: 0 0 10px 0;
-}
-
-.collection-scroll {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto; /* Scroll horizontal para las colecciones */
-    padding-bottom: 5px; /* Espacio para la barra de scroll */
-}
-
-/* Estilos de las colecciones, ahora en horizontal */
-.collection-item {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 10px;
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 6px;
-    min-width: 120px; /* Ancho fijo para las tarjetas horizontales */
-    transition: background-color 0.2s;
-    cursor: pointer;
-    position: relative;
-}
-.collection-item span { font-weight: bold; font-size: 0.9em; }
-.collection-item small { color: var(--text-muted); font-size: 0.7em; }
-.play-small-btn {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    background-color: var(--play-btn-bg);
-    color: var(--text-color);
-    border: none;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 0.7em;
-}
-
-
-/* --- CONTENIDO PRINCIPAL (ajustes) --- */
 
 /* Navegación Superior */
 .top-navigation {
     display: flex;
-    justify-content: space-around; /* Repartir el espacio */
-    gap: 10px;
+    justify-content: center; /* Centramos los botones de navegación */
+    gap: 10px; /* Reducimos el espacio */
     margin-bottom: 20px;
 }
 .nav-top-btn {
-    flex-grow: 1; /* Para que ocupen el mismo ancho */
-    text-align: center;
-    background: var(--bg-dark);
+    background: var(--bg-content);
     color: var(--text-color);
     border: 1px solid var(--border-color);
-    padding: 8px 10px;
+    padding: 6px 12px;
     border-radius: 20px;
     cursor: pointer;
-    font-size: 0.9em;
+    font-size: 0.8em; /* Un poco más pequeño para móvil */
+    transition: background-color 0.2s;
 }
+.nav-top-btn.active {
+    background-color: var(--primary-color);
+    color: var(--bg-dark);
+    font-weight: bold;
+    border-color: var(--primary-color);
+}
+.nav-top-btn:not(.active):hover { background-color: #333; }
+
 
 /* Reproductor Superior y Acciones */
 .player-header {
-    flex-direction: column; /* En una app, el título va encima de las acciones */
+    display: flex;
+    flex-direction: column; /* Apilamos en vertical para móvil */
     align-items: flex-start;
-    padding: 10px;
+    padding: 15px;
     background-color: var(--bg-dark);
     border-radius: 8px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 .track-info {
-    margin-bottom: 10px;
-}
-.player-actions {
     width: 100%;
-    display: flex;
-    justify-content: space-around;
+    margin-bottom: 10px; /* Espacio antes de los botones */
 }
-.player-actions button { margin: 0; flex-grow: 1; }
-.player-actions .secondary { background-color: #333; color: var(--text-color); border: none; margin-right: 5px; }
-.player-actions .primary { background-color: var(--primary-color); color: var(--bg-dark); border: none; margin-left: 5px; }
+.current-track-title { font-size: 1.5em; font-weight: bold; } /* Título más grande */
+.track-artist { font-size: 0.9em; color: var(--text-muted); }
+
+.player-actions { 
+    display: flex; 
+    justify-content: space-between;
+    width: 100%; /* Ocupan todo el ancho */
+}
+.player-actions button { 
+    flex-grow: 1;
+    margin-left: 0; 
+    padding: 8px 15px; 
+    border-radius: 20px; /* Botones más redondeados */
+    font-size: 0.9em; 
+}
+.player-actions .secondary { margin-right: 10px; } /* Espacio entre botones */
 
 
 /* Visualizador y Controles Inferiores */
+.player-visualizer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Reducimos un poco el espacio */
+}
 .visualizer-container {
     width: 100%;
-    height: 150px; /* Reducir altura para móvil */
+    height: 150px; /* Altura más cómoda para móvil */
+    position: relative;
+    background-color: #111;
+    border-radius: 6px;
 }
 
 /* Canciones Marcadas (Cards) */
+.marked-tracks-container h2 { font-size: 1em; color: var(--text-color); margin-bottom: 15px; }
 .marked-tracks {
-    display: grid;
-    /* Reducido a 2 columnas principales para simular mejor las tarjetas en móvil */
-    grid-template-columns: 1fr 1fr; 
-    gap: 10px;
-}
-.marked-card {
-    padding: 12px;
+    /* Ajustamos las columnas para que sean más grandes en móvil */
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+    gap: 8px; /* Reducimos el espacio */
 }
 
 /* Controles de Reproducción */
 .playback-controls {
-    flex-wrap: wrap; /* Permite que los elementos se envuelvan si es necesario */
-    justify-content: center;
+    display: flex;
+    flex-wrap: wrap; /* Permitimos que los controles se envuelvan si es necesario */
+    justify-content: center; /* Centramos los controles */
+    align-items: center;
     gap: 10px;
-    padding-top: 5px;
+    padding: 10px 0;
+    width: 100%;
 }
 .transport-controls {
-    order: 2; /* Mueve los botones de play al centro inferior */
-    width: 100%;
-    justify-content: center;
+    order: 2; /* Movemos los controles de transporte al centro */
+    display: flex; gap: 20px; 
 }
 .progress-container { 
-    order: 1; /* Mueve la barra de progreso arriba */
-    width: 100%;
-    margin: 0 0 10px 0;
+    order: 1; /* Movemos la barra de progreso arriba de los botones de transporte */
+    flex-grow: 1; 
+    margin: 0 0 10px 0; /* Espacio debajo de la barra */
+    width: 100%; /* Ocupa todo el ancho */
 }
 .volume-controls { 
-    order: 3; /* Mantiene los controles de volumen abajo */
-    width: 100%;
-    justify-content: space-between;
+    order: 3; /* Movemos los controles de volumen al final */
+    justify-content: center;
 }
 .control-btn {
-    font-size: 1em;
+    font-size: 1.5em; /* Aumentamos el tamaño de los iconos */
 }
 .play-pause-lg {
-    font-size: 2em !important; /* Más pequeño para móvil */
+    font-size: 3em !important; /* El botón de Play/Pause es más grande */
 }
 
 /* SECCIONES SECUNDARIAS */
-.content-section { padding-bottom: 20px; }
-.content-section.active { display: block; }
-
-/* Utilidades */
-.dummy-action { opacity: 0.6; cursor: default !important; }
-.error-message { 
-    font-size: 0.8em;
-    bottom: 5px;
+.content-section {
+    padding-bottom: 50px; /* Espacio al final de cada sección */
 }
