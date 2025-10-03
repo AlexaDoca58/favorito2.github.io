@@ -124,7 +124,7 @@ body {
     flex-grow: 1;
     padding: 20px;
     background-color: var(--bg-content);
-    overflow-y: auto;
+    overflow-y: auto; /* Mantener para escritorio */
 }
 
 /* Navegación Superior */
@@ -301,10 +301,11 @@ body {
 /* === AJUSTE CRÍTICO PARA APPMACINE (VISTA MÓVIL) === */
 /* ======================================================= */
 @media (max-width: 900px) {
-    /* Ocultamos la barra lateral que causa desbordamiento */
+    /* Ocultamos la barra lateral */
     .sidebar {
         display: none !important; 
     }
+    
     /* Hacemos que el contenedor principal ocupe todo el espacio */
     .dashboard-container {
         width: 100vw;
@@ -314,12 +315,21 @@ body {
         box-shadow: none;
         flex-direction: column;
     }
+    
     .main-content {
         padding: 15px;
         width: 100%;
         max-width: 100%;
         min-height: 100vh;
+        /* IMPORTANTE: Eliminamos el scroll interno para que el scroll lo maneje la app */
+        overflow-y: visible; 
     }
+    
+    /* Ocultar la barra de desplazamiento en Chrome, Safari, etc. */
+    .main-content::-webkit-scrollbar {
+        display: none; 
+    }
+    
     /* Las tarjetas de canciones ocupan una columna completa para mayor visibilidad */
     .marked-tracks {
         grid-template-columns: 1fr; 
