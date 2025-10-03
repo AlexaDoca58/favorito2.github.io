@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. LISTA DE CANCIONES (¡CON DURACIÓN Y NOMBRES CORREGIDOS!)
     // NOTA: Asegúrate de que los archivos .mp3 existan en la ruta './Audio/'
     const tracks = [
+        // Las duraciones son estáticas y solo se usan para mostrar en la tarjeta
         { title: 'Once Upon a Time', src: './Audio/01. Once Upon A Time.mp3', duration: '1:03' },
         { title: 'Fallen Down', src: './Audio/04. Fallen Down.mp3', duration: '1:48' },
         { title: 'Your Best Friend', src: './Audio/03. Your Best Friend.mp3', duration: '0:30' },
@@ -42,17 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let isUserInteraction = false;
     let isShuffling = false; 
 
-    // Función auxiliar para formatear el tiempo
-    const formatTime = (seconds) => {
-        if (isNaN(seconds) || seconds < 0) return '--:--';
-        const min = Math.floor(seconds / 60);
-        const sec = Math.floor(seconds % 60);
-        return `${min}:${sec < 10 ? '0' : ''}${sec}`;
-    };
-
     const showError = (message) => {
         errorMessage.textContent = message;
         errorMessage.style.display = 'block';
+        // Ajuste de color según el tipo de mensaje
         errorMessage.style.backgroundColor = message.includes('Error') ? '#ff4444' : '#ffd700';
         errorMessage.style.color = message.includes('Error') ? 'white' : 'black';
         setTimeout(() => {
@@ -88,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         animationId = requestAnimationFrame(drawVisualizer);
         
+        // Ajuste de tamaño del canvas
         visualizerCanvas.width = visualizerCanvas.clientWidth;
         visualizerCanvas.height = visualizerCanvas.clientHeight;
         
@@ -100,10 +95,10 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < dataArray.length; i++) {
             const barHeight = Math.min((dataArray[i] / 255) * visualizerCanvas.height, visualizerCanvas.height); 
             
-            // Colores Rojos/Rosados para el visualizador
+            // Colores Rojos/Rosados para el visualizador (similar a tu diseño)
             const gradient = canvasCtx.createLinearGradient(0, visualizerCanvas.height - barHeight, 0, visualizerCanvas.height);
-            gradient.addColorStop(0, '#ff0000'); // Rojo fuerte
-            gradient.addColorStop(1, '#ff6666'); // Rojo claro
+            gradient.addColorStop(0, '#ff0000'); 
+            gradient.addColorStop(1, '#ff6666'); 
             
             canvasCtx.fillStyle = gradient;
             canvasCtx.fillRect(x, visualizerCanvas.height - barHeight, barWidth, barHeight);
@@ -116,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cancelAnimationFrame(animationId);
             animationId = null;
         }
-        // Dejar el canvas con el placeholder
+        // No limpiar el canvas para que se quede vacío y se vea el placeholder
     };
     
     // 4. LÓGICA DEL REPRODUCTOR
@@ -129,11 +124,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentTrack = tracks[currentTrackIndex];
         audio.src = currentTrack.src;
         
+        // Muestra el título y la duración estática de la tarjeta
         trackTitle.textContent = currentTrack.title;
         trackArtistInfo.textContent = `Toby Fox · ${currentTrack.duration}`; 
         
         audio.load();
         progressBar.value = 0;
+
 
         // Actualizar el estado 'playing' de las cards
         document.querySelectorAll('.marked-card').forEach((card, i) => {
@@ -229,8 +226,11 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'marked-card';
             card.dataset.index = index; 
             
+            // Aquí quitamos el número del título (ej: 01. Once Upon a Time -> Once Upon a Time)
+            const cleanedTitle = track.title.replace(/^\d+\.\s*/, ''); 
+            
             card.innerHTML = `
-                <p>${track.title}</p>
+                <p>${cleanedTitle}</p> 
                 <small>${track.duration}</small>
             `;
             
@@ -268,15 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mixBtn.addEventListener('click', handleMixToggle);
     playAllBtn.addEventListener('click', handlePlayAll);
 
-    // Navegación y botones DUMMY
-    document.querySelectorAll('.dummy-action').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const text = e.currentTarget.textContent.trim();
-            showError(`La función "${text}" es sólo visual/dúmmy.`);
-        });
-    });
-
+    // Navegación (para cambiar entre Música y Arte)
     document.querySelectorAll('.nav-top-btn').forEach(item => {
         item.addEventListener('click', (event) => {
             document.querySelectorAll('.nav-top-btn').forEach(i => i.classList.remove('active'));
@@ -286,8 +278,21 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.toggle('active', section.id === `${sectionId}-section`);
             });
+            if(event.currentTarget.classList.contains('dummy-action')) {
+                showError(`La sección "Listas" es sólo visual/dúmmy.`);
+            }
         });
     });
+    
+    // Funcionalidad para botones dummy
+    document.querySelectorAll('.dummy-action').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const text = e.currentTarget.textContent.trim();
+            showError(`La función "${text}" es sólo visual/dúmmy.`);
+        });
+    });
+
 
     audio.addEventListener('ended', playNextTrack);
     audio.addEventListener('error', (e) => {
