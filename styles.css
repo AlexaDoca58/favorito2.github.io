@@ -27,8 +27,8 @@ body {
 .dashboard-container {
     display: flex;
     width: 95vw;
-    max-width: 1200px; /* Tamaño de escritorio o tablet grande */
-    height: 90vh;
+    max-width: 1200px; /* Tamaño máximo para simular escritorio */
+    height: 90vh; /* Altura de la ventana */
     background-color: var(--bg-dark);
     border-radius: 12px;
     overflow: hidden;
@@ -182,7 +182,7 @@ body {
 }
 .visualizer-container {
     width: 100%;
-    height: 200px; /* Altura del visualizador aumentada */
+    height: 200px; /* Altura consistente para el visualizador */
     position: relative;
     background-color: #111;
     border-radius: 6px;
@@ -208,7 +208,8 @@ body {
 .marked-tracks-container h2 { font-size: 1em; color: var(--text-color); margin-bottom: 15px; }
 .marked-tracks {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* Tarjetas flexibles */
+    /* 4 columnas por defecto, ajustables al tamaño */
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
     gap: 10px;
 }
 .marked-card {
@@ -234,6 +235,7 @@ body {
     align-items: center;
     gap: 15px;
     padding-top: 10px;
+    width: 100%; /* Ocupa todo el ancho */
 }
 .transport-controls {
     display: flex; gap: 15px; 
@@ -277,8 +279,6 @@ body {
 /* --- SECCIONES SECUNDARIAS --- */
 .content-section { display: none; }
 .content-section.active { display: block; }
-.creator-container { padding: 20px 0; }
-.creator-info { text-align: justify; }
 
 /* Utilidades */
 .dummy-action { opacity: 0.6; cursor: default !important; }
