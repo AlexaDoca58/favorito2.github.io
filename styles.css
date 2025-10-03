@@ -1,14 +1,14 @@
 :root {
     --bg-dark: #121212; /* Fondo principal (negro) */
     --bg-content: #1e1e1e; /* Fondo del contenido principal */
-    --sidebar-color: #3b2866; /* Morado Oscuro de la barra lateral */
-    --primary-color: #ffd700; /* Amarillo/Dorado (Botones de Reproducir) */
+    --sidebar-color: #3b2866; /* Morado Oscuro de la barra lateral (aunque oculta, define la paleta) */
+    --primary-color: #ffd700; /* Amarillo/Dorado (Botones de Reproducir/Activo) */
     --secondary-color: #ff0000; /* Rojo (Énfasis en la reproducción/visualizador) */
     --text-color: #ffffff; /* Texto principal */
     --text-muted: #aaaaaa; /* Texto secundario */
     --track-active-bg: #444444; /* Fondo para tarjeta de canción activa */
     --border-color: #333333;
-    --play-btn-bg: #5a3c9b; /* Morado más claro para el botón de play en colecciones */
+    --play-btn-bg: #5a3c9b; /* Morado más claro para el botón de play */
 }
 
 body {
@@ -17,52 +17,44 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    /* QUITAMOS el centrado para simular la columna de la app */
 }
 
-/* --- ESTRUCTURA PRINCIPAL (Dashboard) --- */
+/* --- ESTRUCTURA PRINCIPAL (Ajuste para AppMachine) --- */
 .dashboard-container {
     display: flex;
-    /* AJUSTE CLAVE: Hacemos que ocupe el 100% para la columna de AppMachine */
     width: 100%; 
-    max-width: none; /* Quitamos el max-width */
-    height: auto; /* Dejamos que la altura crezca */
+    max-width: none; 
+    height: auto; 
     background-color: var(--bg-dark);
-    border-radius: 0; /* Sin bordes redondeados */
-    overflow: visible;
-    box-shadow: none; /* Sin sombra */
 }
 
-/* --- 1. BARRA LATERAL (Izquierda) --- */
-/* AJUSTE CLAVE: OCULTAMOS COMPLETAMENTE LA BARRA LATERAL para AppMachine */
+/* OCULTAMOS COMPLETAMENTE LA BARRA LATERAL (ASIDE) */
 .sidebar {
     display: none; 
 }
 
-/* --- 2. CONTENIDO PRINCIPAL (Derecha) --- */
+/* CONTENIDO PRINCIPAL (Ocupa todo el espacio visible en AppMachine) */
 .main-content {
     flex-grow: 1;
-    padding: 15px; /* Reducimos un poco el padding */
+    padding: 15px; 
     background-color: var(--bg-content);
-    overflow-y: visible; /* Permitimos el scroll normal de la app */
-    min-height: 100vh; /* Para asegurar que el fondo se vea en toda la pantalla */
+    overflow-y: visible;
+    min-height: 100vh; 
 }
 
-/* Navegación Superior */
+/* NAVEGACIÓN SUPERIOR */
 .top-navigation {
-    display: flex;
-    justify-content: center; /* Centramos los botones de navegación */
-    gap: 10px; /* Reducimos el espacio */
-    margin-bottom: 20px;
+    display: flex; justify-content: space-around; gap: 10px; margin-bottom: 20px;
 }
 .nav-top-btn {
+    flex-grow: 1;
     background: var(--bg-content);
     color: var(--text-color);
     border: 1px solid var(--border-color);
-    padding: 6px 12px;
+    padding: 8px 10px;
     border-radius: 20px;
     cursor: pointer;
-    font-size: 0.8em; /* Un poco más pequeño para móvil */
+    font-size: 0.8em; 
     transition: background-color 0.2s;
 }
 .nav-top-btn.active {
@@ -73,93 +65,115 @@ body {
 }
 .nav-top-btn:not(.active):hover { background-color: #333; }
 
-
-/* Reproductor Superior y Acciones */
+/* REPRODUCTOR SUPERIOR */
 .player-header {
-    display: flex;
-    flex-direction: column; /* Apilamos en vertical para móvil */
-    align-items: flex-start;
-    padding: 15px;
-    background-color: var(--bg-dark);
-    border-radius: 8px;
-    margin-bottom: 20px;
+    display: flex; flex-direction: column; align-items: flex-start;
+    padding: 15px; background-color: var(--bg-dark); border-radius: 8px; margin-bottom: 20px;
 }
-.track-info {
-    width: 100%;
-    margin-bottom: 10px; /* Espacio antes de los botones */
-}
-.current-track-title { font-size: 1.5em; font-weight: bold; } /* Título más grande */
+.current-track-title { font-size: 1.5em; font-weight: bold; color: var(--primary-color); }
 .track-artist { font-size: 0.9em; color: var(--text-muted); }
 
 .player-actions { 
-    display: flex; 
-    justify-content: space-between;
-    width: 100%; /* Ocupan todo el ancho */
+    display: flex; justify-content: space-between; width: 100%; margin-top: 10px;
 }
-.player-actions button { 
-    flex-grow: 1;
-    margin-left: 0; 
-    padding: 8px 15px; 
-    border-radius: 20px; /* Botones más redondeados */
-    font-size: 0.9em; 
+.player-actions .action-btn { 
+    flex-grow: 1; padding: 10px 15px; border-radius: 20px; font-weight: bold; border: none;
+    cursor: pointer;
 }
-.player-actions .secondary { margin-right: 10px; } /* Espacio entre botones */
+.player-actions .primary {
+    background-color: var(--primary-color);
+    color: var(--bg-dark);
+    margin-left: 10px;
+}
+.player-actions .secondary {
+    background-color: var(--border-color);
+    color: var(--text-color);
+}
 
 
-/* Visualizador y Controles Inferiores */
-.player-visualizer-section {
-    display: flex;
-    flex-direction: column;
-    gap: 15px; /* Reducimos un poco el espacio */
-}
+/* VISUALIZADOR Y LISTAS */
 .visualizer-container {
-    width: 100%;
-    height: 150px; /* Altura más cómoda para móvil */
-    position: relative;
-    background-color: #111;
-    border-radius: 6px;
+    width: 100%; height: 150px; position: relative;
+    background-color: #111; border-radius: 6px;
+    margin-bottom: 20px;
+}
+.visualizer-placeholder {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    display: flex; justify-content: center; align-items: center;
+    color: var(--text-muted); font-size: 0.9em;
+    z-index: 1;
+}
+#frequency-visualizer {
+    width: 100%; height: 100%; position: relative; z-index: 2; display: block;
 }
 
-/* Canciones Marcadas (Cards) */
-.marked-tracks-container h2 { font-size: 1em; color: var(--text-color); margin-bottom: 15px; }
+/* LISTA DE CANCIONES (CARDS) */
+.marked-tracks-container h2 { font-size: 1.2em; color: var(--text-color); margin-bottom: 15px; }
 .marked-tracks {
-    /* Ajustamos las columnas para que sean más grandes en móvil */
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
-    gap: 8px; /* Reducimos el espacio */
+    display: grid;
+    grid-template-columns: 1fr; /* Una sola columna para móvil */
+    gap: 10px;
 }
+.track-card {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 15px; background-color: #222; border-radius: 6px;
+    cursor: pointer; transition: background-color 0.2s;
+}
+.track-card:hover { background-color: var(--track-active-bg); }
+.track-card.active {
+    background-color: var(--play-btn-bg); /* Morado más claro para la activa */
+    color: var(--primary-color);
+    border-left: 3px solid var(--primary-color);
+    font-weight: bold;
+}
+.track-card .track-id { color: var(--text-muted); margin-right: 10px; }
+.track-card.active .track-id { color: var(--primary-color); }
+.track-card .track-title { flex-grow: 1; }
+.track-card .track-duration { color: var(--text-muted); font-size: 0.9em; }
 
-/* Controles de Reproducción */
+
+/* CONTROLES INFERIORES */
 .playback-controls {
     display: flex;
-    flex-wrap: wrap; /* Permitimos que los controles se envuelvan si es necesario */
-    justify-content: center; /* Centramos los controles */
+    flex-direction: column; /* Apilamos Progress y Transport */
     align-items: center;
-    gap: 10px;
-    padding: 10px 0;
+    gap: 15px;
+    padding: 20px 0;
     width: 100%;
 }
-.transport-controls {
-    order: 2; /* Movemos los controles de transporte al centro */
-    display: flex; gap: 20px; 
-}
-.progress-container { 
-    order: 1; /* Movemos la barra de progreso arriba de los botones de transporte */
-    flex-grow: 1; 
-    margin: 0 0 10px 0; /* Espacio debajo de la barra */
-    width: 100%; /* Ocupa todo el ancho */
-}
-.volume-controls { 
-    order: 3; /* Movemos los controles de volumen al final */
-    justify-content: center;
-}
+.progress-container { width: 100%; }
+.transport-controls { display: flex; justify-content: center; gap: 30px; order: 2; }
+.volume-controls { display: flex; justify-content: center; gap: 15px; order: 3; width: 100%; }
+
 .control-btn {
-    font-size: 1.5em; /* Aumentamos el tamaño de los iconos */
+    background: none; border: none; color: var(--primary-color);
+    font-size: 1.8em; cursor: pointer; transition: color 0.2s;
 }
+.control-btn:hover { color: var(--text-color); }
 .play-pause-lg {
-    font-size: 3em !important; /* El botón de Play/Pause es más grande */
+    font-size: 3.5em !important;
 }
 
+/* Barra de Progreso */
+.progress-slider {
+    width: 100%; -webkit-appearance: none; appearance: none;
+    height: 6px; background: var(--border-color); border-radius: 5px; cursor: pointer;
+}
+.progress-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 15px; height: 15px; background: var(--primary-color); 
+    border-radius: 50%; cursor: pointer;
+}
+.add-to-list-btn { font-size: 0.9em; padding: 8px 12px; border-radius: 20px; background-color: var(--bg-content); border: 1px solid var(--border-color); color: var(--text-color); }
+
+
 /* SECCIONES SECUNDARIAS */
-.content-section {
-    padding-bottom: 50px; /* Espacio al final de cada sección */
+.content-section { display: none; }
+.content-section.active { display: block; }
+
+.error-message {
+    position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+    color: var(--text-color); background-color: rgba(255, 0, 0, 0.8); 
+    padding: 5px 10px; border-radius: 5px; z-index: 10;
+    display: none;
 }
